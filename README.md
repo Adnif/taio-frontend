@@ -7,10 +7,10 @@
 6. Dashboard Ststistik
 7. Tolak dokumen
 8. Tanda tangan lebih dari 1 dokumen
-9. Preview dokumen
+9. Preview dokumen
 10. Search
 11. Bulk Sign (Acc Permintaan Sekaligus)
-12. Minta Cepat
+12. Minta Cepat
 13. Follow
 14. Lupa Password
 
