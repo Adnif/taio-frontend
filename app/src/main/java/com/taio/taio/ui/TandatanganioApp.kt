@@ -41,7 +41,7 @@ fun TandatanganioApp(modifier: Modifier = Modifier) {
                 modifier = modifier
             ) {
                 composable(route = TandatanganioScreen.Home.name) {
-                    HomeScreen()
+                    HomeScreen(name = "Budi Santoso")
                 }
             }
         }
