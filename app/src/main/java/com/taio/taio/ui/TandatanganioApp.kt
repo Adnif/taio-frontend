@@ -11,8 +11,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.taio.taio.domain.model.User
+import com.taio.taio.ui.screen.HomeScreen
 import com.taio.taio.ui.theme.TandatanganioMobileTheme
-import com.taio.taio.ui.theme.screen.HomeScreen
+import com.taio.taio.ui.screen.HomeScreen
 
 enum class TandatanganioScreen() {
     Home,
@@ -41,7 +43,7 @@ fun TandatanganioApp(modifier: Modifier = Modifier) {
                 modifier = modifier
             ) {
                 composable(route = TandatanganioScreen.Home.name) {
-                    HomeScreen(name = "Budi Santoso")
+                    HomeScreen(User(0, ""))
                 }
             }
         }
