@@ -1,5 +1,6 @@
 package com.taio.taio.ui.theme.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.taio.taio.R
 import com.taio.taio.ui.theme.fonts
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 
 
 @Composable
@@ -37,6 +39,7 @@ fun HomeScreen(
     name: String,
 ){
     Column() {
+        val mContext = LocalContext.current
         Row(modifier = modifier
             .padding(PaddingValues(top = 65.dp, start = 24.dp))
         ) {
@@ -73,7 +76,8 @@ fun HomeScreen(
             SearchBar(
                 text = searchText,
                 onTextChange = {searchText = it},
-                onSearchClicked = {}
+                onSearchClicked = {Toast.makeText(
+                    mContext, searchText, Toast.LENGTH_LONG).show()}
             )
         }
         Row(
@@ -108,7 +112,8 @@ fun HomeScreen(
                     .padding(PaddingValues(end = 18.dp))
             ) {
                 Text(
-                    modifier = Modifier.clickable {  },
+                    modifier = Modifier.clickable { Toast.makeText(
+                        mContext, "Minta Cepat Selengkapnya", Toast.LENGTH_LONG).show() },
                     textAlign = TextAlign.End,
                     text = "Selengkapnya",
                     fontSize = 12.sp,
@@ -120,33 +125,10 @@ fun HomeScreen(
             }
 
         }
-        Row(
-            modifier = modifier
-                .padding(PaddingValues(start = 24.dp, top = 17.dp))
-        ) {
-            Image(
-                modifier = modifier
-                    .size(50.dp)
-                    .clip(RoundedCornerShape(500.dp)),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.avatar),
-                contentDescription = null
-            )
-            Column(modifier = modifier
-                .padding(PaddingValues(start = 15.dp, top = 14.dp))
-                .width(130.dp)
-                .height(21.dp)
-            ){
-                Text(
-                    text = "Ahmad Bani Faqih",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.W500,
-                    fontFamily = fonts,
-                    color = Color(0xFFA684EE),
-                    lineHeight = 21.sp
-                )
-            }
-        }
+
+        AskFast(avatar = R.drawable.avatar, name = "Ahmad Bani Faqih")
+        AskFast(avatar = R.drawable.avatar, name = "Ahmad Luhur Pakerti")
+        AskFast(avatar = R.drawable.avatar, name = "Chiko Tridipa")
 
         Row(
             modifier = modifier
@@ -181,7 +163,8 @@ fun HomeScreen(
                     .padding(PaddingValues(end = 18.dp))
             ) {
                 Text(
-                    modifier = Modifier.clickable {  },
+                    modifier = Modifier.clickable { Toast.makeText(
+                        mContext, "Permintaan Selengkapnya", Toast.LENGTH_LONG).show() },
                     textAlign = TextAlign.End,
                     text = "Selengkapnya",
                     fontSize = 12.sp,
@@ -264,6 +247,43 @@ fun SearchBar(
    )
 }
 
+@Composable
+fun AskFast(
+    avatar: Int,
+    name : String,
+    modifier: Modifier = Modifier
+){
+    val mContext = LocalContext.current
+    Row(
+        modifier = modifier
+            .clickable { Toast.makeText(
+                mContext, name, Toast.LENGTH_LONG).show() }
+            .padding(PaddingValues(start = 24.dp, top = 17.dp))
+    ) {
+        Image(
+            modifier = modifier
+                .size(50.dp)
+                .clip(RoundedCornerShape(500.dp)),
+            contentScale = ContentScale.Crop,
+            painter = painterResource(id = avatar),
+            contentDescription = null
+        )
+        Column(modifier = modifier
+            .padding(PaddingValues(start = 15.dp, top = 14.dp))
+            .width(130.dp)
+            .height(21.dp)
+        ){
+            Text(
+                text = name,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.W500,
+                fontFamily = fonts,
+                color = Color(0xFFA684EE),
+                lineHeight = 21.sp
+            )
+        }
+    }
+}
 
 @Preview(showSystemUi = true)
 @Composable
