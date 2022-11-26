@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,11 +28,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.taio.taio.R
 import com.taio.taio.ui.theme.fonts
+import androidx.compose.runtime.*
+
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    name: String
+    name: String,
 ){
     Column() {
         Row(modifier = modifier
@@ -67,7 +68,13 @@ fun HomeScreen(
                 .padding(PaddingValues(top = 43.dp))
                 .align(Alignment.CenterHorizontally)
         ){
-            SearchBar(text = "Search", onTextChange = {}, onCloseClicked = {}, onSearchClicked = {})
+
+            var searchText by remember { mutableStateOf("") }
+            SearchBar(
+                text = searchText,
+                onTextChange = {searchText = it},
+                onSearchClicked = {}
+            )
         }
         Row(
             modifier = modifier
@@ -85,7 +92,7 @@ fun HomeScreen(
             }
             Column(
                 modifier = modifier
-                    .padding(PaddingValues(end = 131.dp))
+                    .padding(PaddingValues(end = 127.dp))
             ) {
                 Text(
                     text = "Minta Cepat",
@@ -98,7 +105,7 @@ fun HomeScreen(
             }
             Column(
                 modifier = modifier
-                    .padding(PaddingValues(end = 20.dp))
+                    .padding(PaddingValues(end = 18.dp))
             ) {
                 Text(
                     modifier = Modifier.clickable {  },
@@ -171,7 +178,7 @@ fun HomeScreen(
             }
             Column(
                 modifier = modifier
-                    .padding(PaddingValues(end = 20.dp))
+                    .padding(PaddingValues(end = 18.dp))
             ) {
                 Text(
                     modifier = Modifier.clickable {  },
@@ -194,7 +201,6 @@ fun HomeScreen(
 fun SearchBar(
     text: String,
     onTextChange: (String) -> Unit,
-    onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ){
    OutlinedTextField(
@@ -203,14 +209,23 @@ fun SearchBar(
            .height(48.dp)
            .clip(RoundedCornerShape(5.dp)),
        value = text,
-       onValueChange = {
-           onTextChange
-       },
+       onValueChange = onTextChange,
        placeholder = {
-           Text(text = "Mau minta tandatangan siapa ?")
+           Text(
+               text = "Mau minta tandatangan siapa ?",
+               color = Color(0xFF615D5D),
+               fontSize = 12.sp,
+               fontWeight = FontWeight.W400,
+               fontFamily = fonts,
+               lineHeight = 18.sp
+           )
        },
        textStyle = TextStyle(
-           fontSize = 15.sp
+           color = Color(0xFF615D5D),
+           fontSize = 12.sp,
+           fontWeight = FontWeight.W400,
+           fontFamily = fonts,
+           lineHeight = 18.sp
        ),
        colors = TextFieldDefaults.outlinedTextFieldColors(
            focusedBorderColor = Color(0xFF28A745)
@@ -230,11 +245,7 @@ fun SearchBar(
        trailingIcon = {
            IconButton(
                onClick = {
-                   if (text.isEmpty()){
-                       onTextChange("")
-                   }else {
-                       onCloseClicked()
-                   }
+                   onTextChange("")
                }
            ) {
                Icon(
