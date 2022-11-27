@@ -1,292 +1,325 @@
-package com.taio.taio.ui.theme.screen
+package com.taio.taio.ui.screen
 
-import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.sharp.Search
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.taio.taio.R
-import com.taio.taio.ui.theme.fonts
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-
+import com.taio.taio.data.DataSource
+import com.taio.taio.domain.model.User
+import com.taio.taio.domain.model.UserRequest
+import com.taio.taio.ui.theme.*
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
-    name: String,
+    authenticatedUser: User,
+    modifier: Modifier = Modifier
 ){
-    Column() {
-        val mContext = LocalContext.current
-        Row(modifier = modifier
-            .padding(PaddingValues(top = 65.dp, start = 24.dp))
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState())
+            .fillMaxWidth()
+    ) {
+        Row(
+            modifier = modifier
+                .padding(top = 21.dp, bottom = 30.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 modifier = modifier
                     .size(74.dp)
-                    .clip(RoundedCornerShape(500.dp)),
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop,
                 painter = painterResource(id = R.drawable.avatar),
                 contentDescription = null
             )
-            Column(modifier = modifier
-                .padding(PaddingValues(start = 48.dp, top = 13.dp))
-                .width(179.dp)
-                .height(48.dp)
-            ){
-                Text(
-                    text = "Halo, Selamat Datang $name",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.W600,
-                    fontFamily = fonts,
-                    color = Color(0xFF1D211D),
-                    lineHeight = 24.sp
-                )
-            }
-        }
-        Row(
-            modifier = modifier
-                .padding(PaddingValues(top = 43.dp))
-                .align(Alignment.CenterHorizontally)
-        ){
-
-            var searchText by remember { mutableStateOf("") }
-            SearchBar(
-                text = searchText,
-                onTextChange = {searchText = it},
-                onSearchClicked = {Toast.makeText(
-                    mContext, searchText, Toast.LENGTH_LONG).show()}
+            Text(
+                text = stringResource(R.string.greeter, authenticatedUser.name),
+                style = Typography.h1,
+                modifier = Modifier.padding(start = 15.dp)
             )
         }
+
+        SearchBar(onSearchBarClick = {})
+
         Row(
             modifier = modifier
                 .padding(PaddingValues(top = 30.dp))
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ){
-            Column(
-                modifier = modifier
-                    .padding(PaddingValues(start = 26.dp,end = 17.dp))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Send,
-                    contentDescription = "Send Icon",
-                    tint = Color(0xFF28A745),
-                )
-            }
-            Column(
-                modifier = modifier
-                    .padding(PaddingValues(end = 127.dp))
-            ) {
-                Text(
-                    text = "Minta Cepat",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.W500,
-                    fontFamily = fonts,
-                    color = Color(0xFF000000),
-                    lineHeight = 21.sp
-                )
-            }
-            Column(
-                modifier = modifier
-                    .padding(PaddingValues(end = 18.dp))
-            ) {
-                Text(
-                    modifier = Modifier.clickable { Toast.makeText(
-                        mContext, "Minta Cepat Selengkapnya", Toast.LENGTH_LONG).show() },
-                    textAlign = TextAlign.End,
-                    text = "Selengkapnya",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.W400,
-                    fontFamily = fonts,
-                    color = Color(0xFF615D5D),
-                    lineHeight = 18.sp,
-                )
-            }
-
+            Icon(
+                imageVector = Icons.Default.Send,
+                contentDescription = "Send Icon",
+                tint = MaterialTheme.colors.primary,
+                modifier = Modifier.padding(end = 15.dp)
+            )
+            Text(
+                text = "Minta Cepat",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.W500,
+                color = Color(0xFF000000),
+                lineHeight = 21.sp
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier
+                    .clickable { },
+                text = "Selengkapnya",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.W400,
+                color = Color(0xFF615D5D),
+                lineHeight = 18.sp,
+            )
         }
 
-        AskFast(avatar = R.drawable.avatar, name = "Ahmad Bani Faqih")
-        AskFast(avatar = R.drawable.avatar, name = "Ahmad Luhur Pakerti")
-        AskFast(avatar = R.drawable.avatar, name = "Chiko Tridipa")
+        FastRequestList(userList = DataSource().loadFastRequest())
 
         Row(
             modifier = modifier
-                .padding(PaddingValues(top = 31.dp))
+                .padding(top = 30.dp),
+            verticalAlignment = Alignment.CenterVertically
         ){
-            Column(
-                modifier = modifier
-                    .padding(PaddingValues(start = 26.dp,end = 17.dp))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AccountBox,
-                    contentDescription = null,
-                    tint = Color(0xFF28A745),
-
-                )
-            }
-            Column(
-                modifier = modifier
-                    .padding(PaddingValues(end = 131.dp))
-            ) {
-                Text(
-                    text = "Permintaan",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.W500,
-                    fontFamily = fonts,
-                    color = Color(0xFF000000),
-                    lineHeight = 21.sp
-                )
-            }
-            Column(
-                modifier = modifier
-                    .padding(PaddingValues(end = 18.dp))
-            ) {
-                Text(
-                    modifier = Modifier.clickable { Toast.makeText(
-                        mContext, "Permintaan Selengkapnya", Toast.LENGTH_LONG).show() },
-                    textAlign = TextAlign.End,
-                    text = "Selengkapnya",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.W400,
-                    fontFamily = fonts,
-                    color = Color(0xFF615D5D),
-                    lineHeight = 18.sp,
-                )
-            }
-
+            Icon(
+                imageVector = Icons.Default.AccountBox,
+                contentDescription = null,
+                tint = MaterialTheme.colors.primary,
+                modifier = Modifier.padding(end = 15.dp)
+            )
+            Text(
+                text = "Permintaan",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.W500,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier.clickable {  },
+                textAlign = TextAlign.End,
+                text = "Selengkapnya",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.W400,
+                color = Color(0xFF615D5D),
+                lineHeight = 18.sp,
+            )
         }
 
+        RequestedList(requests = DataSource().loadRequest())
     }
 }
 
 @Composable
 fun SearchBar(
-    text: String,
-    onTextChange: (String) -> Unit,
-    onSearchClicked: (String) -> Unit
+    onSearchBarClick: () -> Unit,
+    modifier: Modifier = Modifier
 ){
-   OutlinedTextField(
-       modifier = Modifier
-           .width(342.dp)
-           .height(48.dp)
-           .clip(RoundedCornerShape(5.dp)),
-       value = text,
-       onValueChange = onTextChange,
-       placeholder = {
-           Text(
-               text = "Mau minta tandatangan siapa ?",
-               color = Color(0xFF615D5D),
-               fontSize = 12.sp,
-               fontWeight = FontWeight.W400,
-               fontFamily = fonts,
-               lineHeight = 18.sp
-           )
-       },
-       textStyle = TextStyle(
-           color = Color(0xFF615D5D),
-           fontSize = 12.sp,
-           fontWeight = FontWeight.W400,
-           fontFamily = fonts,
-           lineHeight = 18.sp
-       ),
-       colors = TextFieldDefaults.outlinedTextFieldColors(
-           focusedBorderColor = Color(0xFF28A745)
-       ),
-       singleLine = true,
-       leadingIcon = {
-           IconButton(
-               onClick = {}
-           ) {
-               Icon(
-                   imageVector = Icons.Default.Search,
-                   contentDescription = "Search Icon",
-                   tint = Color(0xFF615D5D)
-               )
-           }
-       },
-       trailingIcon = {
-           IconButton(
-               onClick = {
-                   onTextChange("")
-               }
-           ) {
-               Icon(
-                   imageVector = Icons.Default.Close,
-                   contentDescription = "Close Icon",
-                   tint = Color(0xFF615D5D)
-               )
-           }
-       },
-       keyboardOptions = KeyboardOptions(
-           imeAction = ImeAction.Search
-       ),
-       keyboardActions = KeyboardActions(
-           onSearch = { onSearchClicked(text) }
-       )
-   )
+    Row(
+        modifier = modifier
+            .border(
+                BorderStroke(2.dp, MaterialTheme.colors.primary),
+                shape = RoundedCornerShape(5.dp),
+            )
+            .clickable { onSearchBarClick() }
+            .padding(PaddingValues(horizontal = 10.dp, vertical = 15.dp))
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            Icons.Sharp.Search,
+            "search icon",
+            modifier
+                .size(20.dp)
+        )
+        Text(
+            text = stringResource(id = R.string.search_placeholder),
+            modifier = modifier.padding(start = 5.dp)
+        )
+    }
 }
 
 @Composable
-fun AskFast(
-    avatar: Int,
-    name : String,
-    modifier: Modifier = Modifier
-){
-    val mContext = LocalContext.current
+private fun RequestedList(requests: List<UserRequest>){
+    val requestSize = if (requests.size > 3){
+        3
+    }
+    else {
+        requests.size
+    }
+    Column {
+        for (i in 0..requestSize-1) {
+            Requested(requests[i])
+        }
+    }
+}
+
+@Composable
+private fun FastRequestList(userList: List<User>, modifier: Modifier = Modifier){
+    val size = if (userList.size > 3){
+        3
+    } else {
+        userList.size
+    }
+    Column {
+        for (i in 0..size-1) {
+            FastRequest(userList[i], modifier)
+        }
+    }
+}
+
+@Composable
+fun FastRequest(user: User, modifier: Modifier = Modifier){
     Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .clickable { Toast.makeText(
-                mContext, name, Toast.LENGTH_LONG).show() }
-            .padding(PaddingValues(start = 24.dp, top = 17.dp))
+            .padding(top = 15.dp)
     ) {
         Image(
-            modifier = modifier
+            modifier = Modifier
+                .padding(end = 15.dp)
                 .size(50.dp)
-                .clip(RoundedCornerShape(500.dp)),
+                .clip(CircleShape),
             contentScale = ContentScale.Crop,
-            painter = painterResource(id = avatar),
+            painter = painterResource(user.avatar),
             contentDescription = null
         )
-        Column(modifier = modifier
-            .padding(PaddingValues(start = 15.dp, top = 14.dp))
-            .width(130.dp)
-            .height(21.dp)
-        ){
-            Text(
-                text = name,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.W500,
-                fontFamily = fonts,
-                color = Color(0xFFA684EE),
-                lineHeight = 21.sp
+        Text(
+            text = user.name,
+            style = Typography.caption,
+            color = Color(0xFFA684EE),
+            lineHeight = 21.sp
+        )
+    }
+}
+
+@Composable
+fun Requested(request: UserRequest, modifier: Modifier = Modifier) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        elevation = 2.dp,
+        modifier = Modifier
+            .padding(top = 10.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Image(
+                modifier = modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(500.dp)),
+                contentScale = ContentScale.Crop,
+                painter = painterResource(request.avatar),
+                contentDescription = null
             )
+            Column(
+                modifier = modifier
+                    .padding(start = 15.dp)
+            ) {
+                Text(
+                    text = request.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                )
+                Text(
+                    text = request.name,
+                    style = Typography.caption,
+                    modifier = modifier.padding(PaddingValues(top = 5.dp))
+                )
+                Text(
+                    text = request.desc,
+                    style = Typography.caption,
+                    modifier = modifier.padding(PaddingValues(top = 5.dp))
+                )
+                PreviewButton({})
+                Row(
+                    modifier = Modifier.padding(top = 18.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    RequestButton(
+                        text = stringResource(R.string.reject),
+                        buttonColor = Color.White,
+                        onClick = {},
+                        modifier = Modifier.padding(end = 30.dp)
+                    )
+                    RequestButton(
+                        text = stringResource(R.string.accept),
+                        buttonColor = MaterialTheme.colors.primary,
+                        textColor = Color.White,
+                        onClick = {}
+                    )
+                }
+            }
         }
+    }
+
+}
+
+@Composable
+fun PreviewButton(onPreviewClick: () -> Unit) {
+    Button(
+        onClick = onPreviewClick,
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
+        modifier = Modifier.padding(top = 5.dp)
+    ) {
+        Image(
+            painterResource(id = R.drawable.document),
+            contentDescription = null,
+        )
+        Text(
+            text = stringResource(R.string.document_preview),
+            color = Purple200,
+            modifier = Modifier
+                .padding(start = 5.dp)
+        )
+    }
+}
+
+@Composable
+fun RequestButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    buttonColor: Color,
+    textColor: Color = Color.Black,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(buttonColor),
+        modifier = modifier
+    ) {
+        Text(
+            text = text,
+            fontWeight = FontWeight.Light,
+            color = textColor
+        )
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
 fun HomeScreenPreview(){
-    HomeScreen(name = "Budi Santoso")
+    TandatanganioMobileTheme() {
+        val mockUser = User(R.drawable.avatar, "Asep Konco")
+        HomeScreen(mockUser)
+    }
 }

@@ -20,9 +20,23 @@ val fonts = FontFamily(
 
 val Typography = Typography(
     body1 = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = fonts,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
+    ),
+    h1 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 21.sp
+    ),
+    button = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Light
+    ),
+    caption = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp
     )
     /* Other default text styles to override
     button = TextStyle(
