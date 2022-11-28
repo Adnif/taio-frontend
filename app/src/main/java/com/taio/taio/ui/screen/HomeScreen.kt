@@ -69,7 +69,7 @@ fun HomeScreen(
             verticalAlignment = Alignment.CenterVertically,
         ){
             Icon(
-                imageVector = Icons.Default.Send,
+                painter = painterResource(id = R.drawable.send),
                 contentDescription = "Send Icon",
                 tint = MaterialTheme.colors.primary,
                 modifier = Modifier.padding(end = 15.dp)
@@ -93,7 +93,7 @@ fun HomeScreen(
             )
         }
 
-        FastRequestList(userList = DataSource().loadFastRequest())
+        FastRequestList(userList = DataSource().loadFastRequest(), onClick = {})
 
         Row(
             modifier = modifier
@@ -101,7 +101,7 @@ fun HomeScreen(
             verticalAlignment = Alignment.CenterVertically
         ){
             Icon(
-                imageVector = Icons.Default.AccountBox,
+                painter = painterResource(id = R.drawable.request_bold),
                 contentDescription = null,
                 tint = MaterialTheme.colors.primary,
                 modifier = Modifier.padding(end = 15.dp)
@@ -172,7 +172,7 @@ private fun RequestedList(requests: List<UserRequest>){
 }
 
 @Composable
-private fun FastRequestList(userList: List<User>, modifier: Modifier = Modifier){
+private fun FastRequestList(userList: List<User>, modifier: Modifier = Modifier, onClick: () -> Unit){
     val size = if (userList.size > 3){
         3
     } else {
@@ -180,20 +180,20 @@ private fun FastRequestList(userList: List<User>, modifier: Modifier = Modifier)
     }
     Column {
         for (i in 0..size-1) {
-            FastRequest(userList[i], modifier)
+            FastRequest(userList[i], modifier, onClick)
         }
     }
 }
 
 @Composable
-fun FastRequest(user: User, modifier: Modifier = Modifier){
+fun FastRequest(user: User, modifier: Modifier = Modifier, onClick: () -> Unit){
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .padding(top = 15.dp)
+            .clickable { onClick() }
+            .padding(PaddingValues(top = 15.dp))
     ) {
         Image(
-            modifier = Modifier
+            modifier = modifier
                 .padding(end = 15.dp)
                 .size(50.dp)
                 .clip(CircleShape),
