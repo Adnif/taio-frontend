@@ -150,7 +150,15 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier.
             clickable {  }
         )
-        Spacer(Modifier.height(50.dp))
+
+
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Bottom
+    ){
         Row(
 
         ) {
@@ -167,7 +175,6 @@ fun LoginScreen(navController: NavController) {
                 modifier = Modifier.clickable {  }
             )
         }
-
     }
 
 
@@ -203,6 +210,7 @@ fun TextFields(
                 painterResource(leadIcon),
                 contentDescription = label,
                 tint = if (errorState.value) Color(0xFFDC0404) else Color(0xFFC5C5C5),
+                modifier = Modifier.size(24.dp)
             )
         },
         keyboardOptions = keyboardOptions,
