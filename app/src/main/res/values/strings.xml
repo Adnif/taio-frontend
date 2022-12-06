@@ -5,4 +5,9 @@
     <string name="reject">Tolak</string>
     <string name="accept">Terima</string>
     <string name="document_preview">Preview Dokumen</string>
+    <string name="accepted">Permohonan Diterima</string>
+    <string name="sent">Permohonan Terkirim</string>
+    <string name="rejected">Permohonan Ditolak</string>
+    <string name="download">Unduh</string>
+    <string name="reject_message">Alasan penolakan</string>
 </resources>

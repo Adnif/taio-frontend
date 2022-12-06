@@ -27,6 +27,7 @@ import com.taio.taio.R
 import com.taio.taio.data.DataSource
 import com.taio.taio.domain.model.User
 import com.taio.taio.domain.model.UserRequest
+import com.taio.taio.domain.model.UserRequested
 import com.taio.taio.ui.theme.*
 
 @Composable
@@ -123,7 +124,37 @@ fun HomeScreen(
             )
         }
 
-        RequestedList(requests = DataSource().loadRequest())
+        RequestList(requests = DataSource().loadRequest())
+
+        Row(
+            modifier = modifier
+                .padding(top = 30.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Icon(
+                painter = painterResource(id = R.drawable.request_bold),
+                contentDescription = null,
+                tint = MaterialTheme.colors.primary,
+                modifier = Modifier.padding(end = 15.dp)
+            )
+            Text(
+                text = "Pengajuan",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.W500,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier.clickable {  },
+                textAlign = TextAlign.End,
+                text = "Selengkapnya",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.W400,
+                color = Color(0xFF615D5D),
+                lineHeight = 18.sp,
+            )
+        }
+
+        RequestedList(requested = DataSource().loadRequested())
     }
 }
 
@@ -157,7 +188,7 @@ fun SearchBar(
 }
 
 @Composable
-private fun RequestedList(requests: List<UserRequest>){
+private fun RequestList(requests: List<UserRequest>){
     val requestSize = if (requests.size > 3){
         3
     }
@@ -166,7 +197,7 @@ private fun RequestedList(requests: List<UserRequest>){
     }
     Column {
         for (i in 0..requestSize-1) {
-            Requested(requests[i])
+            Request(requests[i])
         }
     }
 }
@@ -181,6 +212,21 @@ private fun FastRequestList(userList: List<User>, modifier: Modifier = Modifier,
     Column {
         for (i in 0..size-1) {
             FastRequest(userList[i], modifier, onClick)
+        }
+    }
+}
+
+@Composable
+private fun RequestedList(requested: List<UserRequested>){
+    val requestedSize = if (requested.size > 3){
+        3
+    }
+    else {
+        requested.size
+    }
+    Column {
+        for (i in 0..requestedSize-1) {
+            Requested(requested[i])
         }
     }
 }
@@ -211,7 +257,7 @@ fun FastRequest(user: User, modifier: Modifier = Modifier, onClick: () -> Unit){
 }
 
 @Composable
-fun Requested(request: UserRequest, modifier: Modifier = Modifier) {
+fun Request(request: UserRequest, modifier: Modifier = Modifier) {
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = 2.dp,
@@ -270,7 +316,98 @@ fun Requested(request: UserRequest, modifier: Modifier = Modifier) {
             }
         }
     }
+}
 
+@Composable
+fun Requested(request: UserRequested, modifier: Modifier = Modifier) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        elevation = 2.dp,
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .defaultMinSize(400.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Image(
+                modifier = modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(500.dp)),
+                contentScale = ContentScale.Crop,
+                painter = painterResource(request.avatar),
+                contentDescription = null
+            )
+            Column(
+                modifier = modifier
+                    .padding(start = 15.dp)
+            ) {
+                Text(
+                    text = request.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                )
+                Text(
+                    text = request.name,
+                    style = Typography.caption,
+                    modifier = modifier.padding(PaddingValues(top = 5.dp))
+                )
+                if (request.status == 1){
+                    Text(
+                        text = stringResource(R.string.reject_message),
+                        style = Typography.caption,
+                        modifier = modifier.padding(PaddingValues(top = 5.dp))
+                    )
+                    Text(
+                        text = request.rejectMessage,
+                        style = Typography.caption,
+                        modifier = modifier.padding(PaddingValues(top = 5.dp))
+                    )
+                }
+                else {
+                    Text(
+                        text = request.desc,
+                        style = Typography.caption,
+                        modifier = modifier.padding(PaddingValues(top = 5.dp))
+                    )
+                }
+                PreviewButton({})
+                Row(
+                    modifier = Modifier.padding(top = 18.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    if (request.status == 2) {
+                        RequestedStatus(
+                            text = stringResource(R.string.accepted),
+                            MaterialTheme.colors.primary,
+                            MaterialTheme.colors.onPrimary
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        RequestButton(
+                            text = stringResource(R.string.download),
+                            buttonColor = Color.Blue,
+                            textColor = Color.White,
+                            onClick = {}
+                        )
+                    }
+                    if (request.status == 0){
+                        RequestedStatus(
+                            text = stringResource(R.string.sent),
+                            Color.Yellow,
+                            MaterialTheme.colors.onSecondary
+                        )
+                    }
+                    if (request.status == 1){
+                        RequestedStatus(
+                            text = stringResource(R.string.rejected),
+                            Color.Gray,
+                            MaterialTheme.colors.onPrimary
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -315,11 +452,36 @@ fun RequestButton(
     }
 }
 
+@Composable
+fun RequestedStatus(
+    text: String,
+    background: Color,
+    textColor: Color
+) {
+    Text(
+        text = text,
+        modifier = Modifier
+            .border(BorderStroke(1.dp, MaterialTheme.colors.primary), Shapes.medium)
+            .background(background)
+            .padding(5.dp),
+        color = textColor,
+        style = Typography.button
+    )
+}
+
 @Preview(showSystemUi = true)
 @Composable
 fun HomeScreenPreview(){
     TandatanganioMobileTheme() {
         val mockUser = User(R.drawable.avatar, "Asep Konco")
         HomeScreen(mockUser)
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun RequestedPreview(){
+    TandatanganioMobileTheme() {
+        RequestedList(requested = DataSource().loadRequested())
     }
 }
