@@ -8,9 +8,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
@@ -20,23 +18,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.taio.taio.R
+import com.taio.taio.data.LoginState
+import com.taio.taio.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = viewModel()
+) {
+    val loginState: LoginState = viewModel.loginState.collectAsState().value
     val context = LocalContext.current
-    val email = remember { mutableStateOf(TextFieldValue()) }
-    val errorState = remember { mutableStateOf(false) }
-    val password = remember { mutableStateOf(TextFieldValue()) }
     val focusManager = LocalFocusManager.current
-    val passwordVisibility = remember { mutableStateOf(true) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,8 +57,10 @@ fun LoginScreen(navController: NavController) {
         Spacer(Modifier.size(16.dp))
         TextFields(
             label = "Email",
-            text = email,
-            errorState = errorState,
+            text = loginState.email,
+            onValueChange = {email -> viewModel.updateEmail(email) },
+            errorState = loginState.isFormError,
+            isError = {error -> viewModel.isFormError(error) },
             leadIcon = R.drawable.profile,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -73,9 +75,12 @@ fun LoginScreen(navController: NavController) {
         Spacer(Modifier.size(16.dp))
         PassField(
             label = "Password",
-            text = password,
-            errorState = errorState,
-            passwordVisibility = passwordVisibility,
+            text = loginState.password,
+            onValueChange = {password -> viewModel.updatePassword(password)},
+            onViewClick = { viewModel.isVisible() },
+            errorState = loginState.isFormError,
+            isError = {error -> viewModel.isFormError(error)},
+            passwordVisibility = loginState.passwordVisibility,
             leadIcon = R.drawable.password,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
@@ -88,8 +93,8 @@ fun LoginScreen(navController: NavController) {
         )
 
         Spacer(Modifier.size(16.dp))
-        if (errorState.value) {
-            Row(){
+        if (loginState.isFormError) {
+            Row{
                 Spacer(Modifier.weight(1f))
                 Text(
                     text = "email atau password salah",
@@ -108,21 +113,14 @@ fun LoginScreen(navController: NavController) {
         }
         Button(
             onClick = {
-                when {
-                    email.value.text.isEmpty() -> {
-                        errorState.value = true
-                    }
-                    password.value.text.isEmpty() -> {
-                        errorState.value = true
-                    }
-                    else -> {
-                        errorState.value = false
-                        Toast.makeText(
-                            context,
-                            "Logged in successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                if(!viewModel.isFormValid()) {
+                    viewModel.isFormError(true)
+                }else{
+                    Toast.makeText(
+                        context,
+                        "Logged in successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             },
@@ -159,9 +157,7 @@ fun LoginScreen(navController: NavController) {
             .padding(16.dp),
         verticalArrangement = Arrangement.Bottom
     ){
-        Row(
-
-        ) {
+        Row{
             Spacer(Modifier.weight(1f))
             Text(
                 text = "Doesn't have an account?",
@@ -183,8 +179,11 @@ fun LoginScreen(navController: NavController) {
 @Composable
 fun TextFields(
     label: String,
-    text: MutableState<TextFieldValue>,
-    errorState: MutableState<Boolean>,
+    text: String,
+    enabled: Boolean = true,
+    onValueChange: (String) -> Unit,
+    isError: (Boolean) -> Unit,
+    errorState: Boolean,
     leadIcon: Int,
     keyboardOptions: KeyboardOptions,
     keyboardActions: KeyboardActions
@@ -197,26 +196,28 @@ fun TextFields(
         modifier = Modifier.padding(bottom = 10.dp)
     )
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = text.value,
+        modifier = Modifier
+            .fillMaxWidth(),
+        value = text,
+        enabled = enabled,
         onValueChange = {
-            if (errorState.value) {
-                errorState.value = false
+            if (errorState) {
+                isError(false)
             }
-            text.value = it
+            onValueChange(it)
         },
         leadingIcon = {
             Icon(
                 painterResource(leadIcon),
                 contentDescription = label,
-                tint = if (errorState.value) Color(0xFFDC0404) else Color(0xFFC5C5C5),
+                tint = if (errorState) Color(0xFFDC0404) else Color(0xFFC5C5C5),
                 modifier = Modifier.size(24.dp)
             )
         },
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            unfocusedBorderColor = if (errorState.value) Color(0xFFDC0404) else Color(0xFFC5C5C5),
+            unfocusedBorderColor = if (errorState) Color(0xFFDC0404) else Color(0xFFC5C5C5),
             focusedBorderColor = Color(0xFF27A74A)
         )
 
@@ -226,9 +227,13 @@ fun TextFields(
 @Composable
 fun PassField(
     label: String,
-    text: MutableState<TextFieldValue>,
-    errorState: MutableState<Boolean>,
-    passwordVisibility: MutableState<Boolean>,
+    text: String,
+    enabled: Boolean = true,
+    errorState: Boolean,
+    onValueChange: (String) -> Unit,
+    onViewClick: () -> Unit,
+    isError: (Boolean) -> Unit,
+    passwordVisibility: Boolean,
     leadIcon: Int,
     keyboardOptions: KeyboardOptions,
     keyboardActions: KeyboardActions
@@ -240,40 +245,43 @@ fun PassField(
         modifier = Modifier.padding(bottom = 10.dp)
     )
     OutlinedTextField(
-        value = text.value,
+        value = text,
+        enabled = enabled,
         onValueChange = {
-            if (errorState.value) {
-                errorState.value = false
+            if (errorState) {
+                isError(false)
             }
-            text.value = it
+            onValueChange(it)
         },
-        isError = errorState.value,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            unfocusedBorderColor = if (errorState.value) Color(0xFFDC0404) else Color(0xFFC5C5C5),
+            unfocusedBorderColor = if (errorState) Color(0xFFDC0404) else Color(0xFFC5C5C5),
             focusedBorderColor = Color(0xFF27A74A)
         ),
         leadingIcon = {
             Icon(
                 painterResource(leadIcon),
                 contentDescription = "Password",
-                tint = if (errorState.value) Color(0xFFDC0404) else Color(0xFFC5C5C5)
+                tint = if (errorState) Color(0xFFDC0404) else Color(0xFFC5C5C5),
+                modifier = Modifier.size(24.dp)
             )
         },
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         trailingIcon = {
             IconButton(onClick = {
-                passwordVisibility.value = !passwordVisibility.value
+                onViewClick()
             }) {
                 Icon(
-                    painter = painterResource(if (passwordVisibility.value) R.drawable.eye_on else R.drawable.eye_off),
+                    painter = painterResource(if (passwordVisibility) R.drawable.eye_off else R.drawable.eye_on),
                     contentDescription = "visibility",
-                    tint = Color(0xFF27A74A)
+                    tint = Color(0xFF27A74A),
+                    modifier = Modifier.size(24.dp)
                 )
             }
         },
-        visualTransformation = if (passwordVisibility.value) PasswordVisualTransformation() else VisualTransformation.None
+        visualTransformation = if (passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None
     )
 }
 
