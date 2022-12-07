@@ -1,17 +1,15 @@
 package com.taio.taio.ui.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
@@ -21,58 +19,51 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.taio.taio.R
+import com.taio.taio.data.RegisterState
+import com.taio.taio.viewmodel.RegisterViewModel
 
 @Composable
-fun RegisterScreen(){
+fun RegisterScreen(viewModel: RegisterViewModel = viewModel()){
+    val registerState = viewModel.registerState.collectAsState().value
     val page = remember { mutableStateOf(1) }
-    val errorState = remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    val name = remember { mutableStateOf(TextFieldValue()) }
-    val userName = remember { mutableStateOf(TextFieldValue()) }
-    val email = remember { mutableStateOf(TextFieldValue()) }
-    val phone = remember { mutableStateOf(TextFieldValue()) }
-    val password = remember { mutableStateOf(TextFieldValue()) }
-    val passConfirm = remember { mutableStateOf(TextFieldValue()) }
-    val passwordVisibility = remember { mutableStateOf(true) }
+    BackHandler(enabled = true) {
+        if(page.value == 1) {
+            page.value = 1
+        }else{
+            page.value = page.value - 1
+        }
+
+    }
     when(page.value){
         1 -> FirstPage(
-            name = name,
-            userName = userName,
+            viewModel = viewModel,
+            registerState = registerState,
             page = page,
-            errorState = errorState,
             focusManager = focusManager,
         )
         2 -> SecondPage(
-            email = email,
-            phone = phone,
+            viewModel = viewModel,
+            registerState = registerState,
             page = page,
-            errorState = errorState,
-            focusManager = focusManager
+            focusManager = focusManager,
         )
         3 -> ThirdPage(
-            password = password,
-            passConfirm = passConfirm,
+            viewModel = viewModel,
+            registerState = registerState,
             page = page,
-            errorState = errorState,
             focusManager = focusManager,
-            passwordVisibility = passwordVisibility
         )
         else -> LastPage(
-            name = name,
-            userName = userName,
-            email = email,
-            phone = phone,
-            password = password,
-            passConfirm = passConfirm,
+            viewModel = viewModel,
+            registerState = registerState,
             page = page,
-            errorState = errorState,
             focusManager = focusManager,
-            passwordVisibility = passwordVisibility
         )
 
     }
@@ -82,17 +73,16 @@ fun RegisterScreen(){
 
 @Composable
 fun FirstPage(
-    name: MutableState<TextFieldValue>,
-    userName: MutableState<TextFieldValue>,
+    viewModel: RegisterViewModel,
+    registerState: RegisterState,
     page: MutableState<Int>,
-    errorState: MutableState<Boolean>,
     focusManager: FocusManager,
 ){
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.Top
+
     ){
         Text(
             text = "Welcome To",
@@ -108,8 +98,10 @@ fun FirstPage(
         Spacer(Modifier.size(16.dp))
         TextFields(
             label = "Nama Lengkap",
-            text = name,
-            errorState = errorState,
+            text = registerState.name,
+            onValueChange = {name -> viewModel.onNameChange(name)},
+            isError = {error -> viewModel.isFormError(error) },
+            errorState = registerState.isFormError,
             leadIcon = R.drawable.profile_bold,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -123,8 +115,10 @@ fun FirstPage(
         Spacer(Modifier.size(16.dp))
         TextFields(
             label = "Username",
-            text = userName,
-            errorState = errorState,
+            text = registerState.userName,
+            onValueChange = {userName -> viewModel.onUserNameChange(userName)},
+            isError = {error -> viewModel.isFormError(error) },
+            errorState = registerState.isFormError,
             leadIcon = R.drawable.username,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
@@ -135,44 +129,44 @@ fun FirstPage(
                 }
             )
         )
-    }
-    Footer(
-        label = "Next",
-        onButtonClick = {
-            when {
-                userName.value.text.isEmpty() -> {
-                    errorState.value = true
-                }
-                else -> {
-                    errorState.value = false
+        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.weight(1f))
+        Footer(
+            label = "Next",
+            onButtonClick = {
+                if(!viewModel.isPageOneValid()) {
+                    viewModel.isFormError(true)
+                }else{
                     page.value = 2
                 }
             }
-        }
-    )
+        )
+    }
+
 
 }
 
 @Composable
 fun SecondPage(
-    email: MutableState<TextFieldValue>,
-    phone: MutableState<TextFieldValue>,
+    viewModel: RegisterViewModel,
+    registerState: RegisterState,
     page: MutableState<Int>,
-    errorState: MutableState<Boolean>,
     focusManager: FocusManager,
 ){
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.Top
     ){
         TextFields(
             label = "Email",
-            text = email,
-            errorState = errorState,
-            leadIcon = R.drawable.email,
+            text = registerState.email,
+            onValueChange = {email -> viewModel.onEmailChange(email)},
+            isError = {error -> viewModel.isFormError(error) },
+            errorState = registerState.isFormError,
+            leadIcon = R.drawable.profile_bold,
             keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
@@ -184,9 +178,11 @@ fun SecondPage(
         Spacer(Modifier.size(16.dp))
         TextFields(
             label = "Phone Number",
-            text = phone,
-            errorState = errorState,
-            leadIcon = R.drawable.phone,
+            text = registerState.phone,
+            onValueChange = {phone -> viewModel.onPhoneChange(phone)},
+            isError = {error -> viewModel.isFormError(error) },
+            errorState = registerState.isFormError,
+            leadIcon = R.drawable.username,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
@@ -197,36 +193,42 @@ fun SecondPage(
                 }
             )
         )
+        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.weight(1f))
+        Footer(
+            label = "Next",
+            onButtonClick = {
+                if(!viewModel.isPageTwoValid()) {
+                    viewModel.isFormError(true)
+                }else{
+                    page.value = 3
+                }
+            }
+        )
     }
-    Footer(
-        label = "Next",
-        onButtonClick = {
-            page.value = 3
-        }
-    )
 
 }
 
 @Composable
 fun ThirdPage(
-    password: MutableState<TextFieldValue>,
-    passConfirm: MutableState<TextFieldValue>,
+    viewModel: RegisterViewModel,
+    registerState: RegisterState,
     page: MutableState<Int>,
-    errorState: MutableState<Boolean>,
     focusManager: FocusManager,
-    passwordVisibility: MutableState<Boolean>
 ){
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.Top
     ){
         PassField(
             label = "Password",
-            text = password,
-            errorState = errorState,
-            passwordVisibility = passwordVisibility,
+            text = registerState.password,
+            errorState = registerState.isFormError,
+            onValueChange = {password -> viewModel.onPasswordChange(password)},
+            onViewClick = { viewModel.isVisible() },
+            isError = {error -> viewModel.isFormError(error)},
+            passwordVisibility = registerState.passwordVisibility,
             leadIcon = R.drawable.password,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -240,10 +242,13 @@ fun ThirdPage(
         Spacer(Modifier.size(16.dp))
         PassField(
             label = "Password Confirm",
-            text = passConfirm,
-            errorState = errorState,
-            passwordVisibility = passwordVisibility,
-            leadIcon = R.drawable.password,
+            text = registerState.passConfirm,
+            errorState = registerState.isFormError,
+            onValueChange = {password -> viewModel.onPassConfirmChange(password)},
+            onViewClick = { viewModel.isVisible() },
+            isError = {error -> viewModel.isFormError(error)},
+            passwordVisibility = registerState.passwordVisibility,
+            leadIcon = R.drawable.password_confirm,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
             ),
@@ -253,46 +258,42 @@ fun ThirdPage(
                 }
             )
         )
-    }
-    Footer(
-        label = "Next",
-        onButtonClick = {
-            when {
-                !password.value.text.equals(passConfirm.value.text) -> {
-                    errorState.value = true
-                }
-                else -> {
-                    errorState.value = false
+        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.weight(1f))
+        Footer(
+            label = "Next",
+            onButtonClick = {
+
+                if(!viewModel.isPageThreeValid() || !viewModel.isPasswordMatch() || !viewModel.isPassMetRequirement()) {
+                    viewModel.isFormError(true)
+                }else{
                     page.value = 4
                 }
             }
-        }
-    )
+        )
+    }
 
 }
 
 @Composable
 fun LastPage(
-    name: MutableState<TextFieldValue>,
-    userName: MutableState<TextFieldValue>,
-    email: MutableState<TextFieldValue>,
-    phone: MutableState<TextFieldValue>,
-    password: MutableState<TextFieldValue>,
-    passConfirm: MutableState<TextFieldValue>,
+    viewModel: RegisterViewModel,
+    registerState: RegisterState,
     page: MutableState<Int>,
-    errorState: MutableState<Boolean>,
     focusManager: FocusManager,
-    passwordVisibility: MutableState<Boolean>
 ){
     Column(
         modifier = Modifier
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.Top
     ){
         TextFields(
             label = "Nama Lengkap",
-            text = name,
-            errorState = errorState,
+            text = registerState.name,
+            enabled = false,
+            onValueChange = {name -> viewModel.onNameChange(name)},
+            isError = {error -> viewModel.isFormError(error) },
+            errorState = registerState.isFormError,
             leadIcon = R.drawable.profile_bold,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -303,10 +304,14 @@ fun LastPage(
                 }
             )
         )
+        Spacer(Modifier.size(16.dp))
         TextFields(
             label = "Username",
-            text = userName,
-            errorState = errorState,
+            text = registerState.userName,
+            enabled = false,
+            onValueChange = {userName -> viewModel.onUserNameChange(userName)},
+            isError = {error -> viewModel.isFormError(error) },
+            errorState = registerState.isFormError,
             leadIcon = R.drawable.username,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
@@ -317,10 +322,14 @@ fun LastPage(
                 }
             )
         )
+        Spacer(Modifier.size(16.dp))
         TextFields(
             label = "Email",
-            text = email,
-            errorState = errorState,
+            text = registerState.email,
+            enabled = false,
+            onValueChange = {email -> viewModel.onEmailChange(email)},
+            isError = {error -> viewModel.isFormError(error) },
+            errorState = registerState.isFormError,
             leadIcon = R.drawable.profile_bold,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -331,13 +340,16 @@ fun LastPage(
                 }
             )
         )
+        Spacer(Modifier.size(16.dp))
         TextFields(
             label = "Phone Number",
-            text = phone,
-            errorState = errorState,
-            leadIcon = R.drawable.phone,
+            text = registerState.phone,
+            enabled = false,
+            onValueChange = {phone -> viewModel.onPhoneChange(phone)},
+            isError = {error -> viewModel.isFormError(error) },
+            errorState = registerState.isFormError,
+            leadIcon = R.drawable.username,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
@@ -346,11 +358,16 @@ fun LastPage(
                 }
             )
         )
+        Spacer(Modifier.size(16.dp))
         PassField(
             label = "Password",
-            text = password,
-            errorState = errorState,
-            passwordVisibility = passwordVisibility,
+            text = registerState.password,
+            enabled = false,
+            errorState = registerState.isFormError,
+            onValueChange = {password -> viewModel.onPasswordChange(password)},
+            onViewClick = { viewModel.isVisible() },
+            isError = {error -> viewModel.isFormError(error)},
+            passwordVisibility = registerState.passwordVisibility,
             leadIcon = R.drawable.password,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
@@ -361,28 +378,35 @@ fun LastPage(
                 }
             )
         )
-        PassField(
-            label = "Password Confirm",
-            text = passConfirm,
-            errorState = errorState,
-            passwordVisibility = passwordVisibility,
-            leadIcon = R.drawable.password,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
+        Spacer(Modifier.size(16.dp))
+        Row{
+            Checkbox(
+                checked = registerState.checkBox,
+                onCheckedChange = {viewModel.onCheckBoxChange()},
+                colors = CheckboxDefaults.colors(
+                    checkedColor = Color(0xFF27A74A),
+                    checkmarkColor = Color.White,
+                    uncheckedColor = Color(0xFFC5C5C5)
+                )
             )
+            Text(
+                text = "saya telah menyetujui persyaratan dan persetujuan (privacy & policy) tandatangan.io"
+            )
+        }
+        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.weight(1f))
+        Footer(
+            label = "Register",
+            onButtonClick = {
+                if(!viewModel.isLastPageValid()) {
+                    viewModel.isFormError(true)
+                }else{
+                    page.value = 1
+                }
+            }
         )
     }
-    Footer(
-        label = "Register",
-        onButtonClick = {
-            errorState.value = false
-        }
-    )
+
 
 }
 
@@ -391,60 +415,51 @@ fun Footer(
     label: String,
     onButtonClick: () -> Unit
 ){
-    Column(
+    Button(
+        onClick = {
+            onButtonClick()
+        },
+        content = {
+            Text(text = label, color = Color.White)
+        },
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Bottom
-    ){
-        Button(
-            onClick = {
-                onButtonClick()
-            },
-            content = {
-                Text(text = label, color = Color.White)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(49.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF27A74A))
-        )
-        Spacer(Modifier.size(16.dp))
-        Row(
-
-        ) {
-            Text(
-                text = "Already have an account? ",
-                fontSize = 15.sp,
-                color = Color.Black,
-            )
-            Text(
-                text = "Sign In",
-                fontSize = 15.sp,
-                color = Color(0xFF27A74A),
-                modifier = Modifier.clickable {  }
-            )
-        }
-        Spacer(Modifier.size(16.dp))
+            .fillMaxWidth()
+            .height(49.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF27A74A))
+    )
+    Spacer(Modifier.size(16.dp))
+    Row{
         Text(
-            text = "Forgot Password?",
+            text = "Already have an account? ",
             fontSize = 15.sp,
             color = Color.Black,
-            modifier = Modifier.
-            clickable {  }
         )
-        Spacer(Modifier.size(16.dp))
         Text(
-            text = "Privacy Policy",
+            text = "Sign In",
             fontSize = 15.sp,
-            color = Color.Black,
-            modifier = Modifier.
-            clickable {  }
+            color = Color(0xFF27A74A),
+            modifier = Modifier.clickable {  }
         )
     }
+    Spacer(Modifier.size(16.dp))
+    Text(
+        text = "Forgot Password?",
+        fontSize = 15.sp,
+        color = Color.Black,
+        modifier = Modifier.
+        clickable {  }
+    )
+    Spacer(Modifier.size(16.dp))
+    Text(
+        text = "Privacy Policy",
+        fontSize = 15.sp,
+        color = Color.Black,
+        modifier = Modifier.
+        clickable {  }
+    )
 }
 
-@Preview
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun RegisterScreenPreview(){
     RegisterScreen()
