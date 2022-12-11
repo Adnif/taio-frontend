@@ -21,6 +21,8 @@ enum class TandatanganioScreen() {
     Login,
     Register,
     Search,
+    Submission,
+    Request
 }
 
 @Composable
