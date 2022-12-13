@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.taio.taio.ui.TandatanganioApp
 import com.taio.taio.ui.TandatanganioApp
+import com.taio.taio.ui.bottomnav.MainScreen
 import com.taio.taio.ui.theme.TandatanganioMobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +20,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TandatanganioMobileTheme {
-                TandatanganioApp()
+                MainScreen()
             }
         }
     }
