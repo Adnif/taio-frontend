@@ -101,7 +101,8 @@ fun TandatanganioApp() {
             FloatingActionButton(
                 shape = CircleShape,
                 onClick = { TODO() },
-                contentColor = Color.White
+                backgroundColor = MaterialTheme.colors.primary,
+                contentColor = MaterialTheme.colors.secondary
             ) {
             }
         }
@@ -123,6 +124,7 @@ fun TandatanganioBottomBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
     BottomNavigation(
+        backgroundColor = MaterialTheme.colors.secondary,
         modifier = Modifier
             .height(70.dp)
             .fillMaxWidth(),
@@ -165,8 +167,8 @@ fun RowScope.AddItem(
         selected = currentDestination?.hierarchy?.any {
             it.route == screen.route
         } == true,
-        selectedContentColor = Color.White,
-        unselectedContentColor = Color.White.copy(alpha = 0.4f),
+        selectedContentColor = MaterialTheme.colors.primary,
+        unselectedContentColor = MaterialTheme.colors.primary.copy(alpha = 0.4f),
         onClick = {
             navController.navigate(screen.route)
         }
