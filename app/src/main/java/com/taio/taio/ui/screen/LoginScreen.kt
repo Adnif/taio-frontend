@@ -1,5 +1,6 @@
 package com.taio.taio.ui.screen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -24,10 +26,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.Gson
 import com.taio.taio.R
 import com.taio.taio.data.LoginState
+import com.taio.taio.data.model.ErrorResponse
+import com.taio.taio.data.model.Users
+import com.taio.taio.data.utils.Result
 import com.taio.taio.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
+
 
 @Composable
 fun LoginScreen(
@@ -37,6 +47,41 @@ fun LoginScreen(
     val loginState: LoginState = viewModel.loginState.collectAsState().value
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(viewModel, context){
+        viewModel.authResults.collect{ result ->
+            when(result){
+                is Result.Authorized -> {
+                    val gson = Gson()
+                    val json = gson.toJson(result.data)
+                    Log.w("LoginScreen", json)
+                }
+
+                is Result.Unathorized -> {
+                    Toast.makeText(
+                        context,
+                        "You're not authorized",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                is Result.ApiError -> {
+                    val apiResponse: ErrorResponse? = result.data as ErrorResponse?
+                    viewModel.validate(apiResponse)
+
+                    Toast.makeText(
+                        context,
+                        apiResponse?.message?:"An error occured",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()

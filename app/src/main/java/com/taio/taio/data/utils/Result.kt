@@ -1,4 +1,4 @@
-package com.taio.taio.domain.utils
+package com.taio.taio.data.utils
 
 sealed class Result<T>(val data: T? = null){
     class Authorized<T>(data: T? = null): Result<T>(data)
