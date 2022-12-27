@@ -19,35 +19,82 @@ val fonts = FontFamily(
 )
 
 val Typography = Typography(
-    body1 = TextStyle(
-        fontFamily = fonts,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    ),
     h1 = TextStyle(
         fontFamily = fonts,
+        fontWeight = FontWeight.Medium,
+        fontSize = 35.sp,
+        lineHeight = 52.5.sp
+    ),
+    h2 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Medium,
+        fontSize = 30.sp,
+        lineHeight = 45.sp
+    ),
+    h3 = TextStyle(
+        fontFamily = fonts,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 21.sp
+        fontSize = 22.sp,
+        lineHeight = 33.sp
+    ),
+    h4 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp
+    ),
+    h5 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
+        lineHeight = 22.5.sp
+    ),
+    h6 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 21.sp
+    ),
+    subtitle1 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Normal,
+        fontSize = 15.sp,
+        lineHeight = 22.5.sp
+    ),
+    subtitle2 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 21.sp
+    ),
+    body1 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 18.sp
+    ),
+    body2 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 18.sp
     ),
     button = TextStyle(
         fontFamily = fonts,
-        fontWeight = FontWeight.Light
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp,
+        lineHeight = 27.sp
     ),
     caption = TextStyle(
         fontFamily = fonts,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
-    )
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontWeight = FontWeight.Medium,
+        fontSize = 10.sp,
+        lineHeight = 15.sp
     ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
+    overline = TextStyle(
+        fontFamily = fonts,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontSize = 10.sp,
+        lineHeight = 15.sp
     )
-    */
 )

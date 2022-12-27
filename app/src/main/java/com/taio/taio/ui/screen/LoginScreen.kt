@@ -1,32 +1,32 @@
 package com.taio.taio.ui.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.taio.taio.R
 import com.taio.taio.data.LoginState
+import com.taio.taio.ui.theme.*
 import com.taio.taio.viewmodel.LoginViewModel
 
 @Composable
@@ -35,144 +35,144 @@ fun LoginScreen(
     viewModel: LoginViewModel = viewModel()
 ) {
     val loginState: LoginState = viewModel.loginState.collectAsState().value
-    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Welcome To",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black
-        )
-        Image(
-            painter = painterResource(id = R.drawable.logo_taio),
-            contentDescription = "Logo Taio",
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.size(16.dp))
-        TextFields(
-            label = "Email",
-            text = loginState.email,
-            onValueChange = {email -> viewModel.updateEmail(email) },
-            errorState = loginState.isFormError,
-            isError = {error -> viewModel.isFormError(error) },
-            leadIcon = R.drawable.profile,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
-            )
-        )
-
-        Spacer(Modifier.size(16.dp))
-        PassField(
-            label = "Password",
-            text = loginState.password,
-            onValueChange = {password -> viewModel.updatePassword(password)},
-            onViewClick = { viewModel.isVisible() },
-            errorState = loginState.isFormError,
-            isError = {error -> viewModel.isFormError(error)},
-            passwordVisibility = loginState.passwordVisibility,
-            leadIcon = R.drawable.password,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            )
-        )
-
-        Spacer(Modifier.size(16.dp))
-        if (loginState.isFormError) {
-            Row{
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = "email atau password salah",
-                    color = Color(0xFFDC0404),
-                    fontSize = 15.sp,
-                    modifier = Modifier.padding(PaddingValues(end = 10.dp))
-                )
-                Icon(
-                    painterResource(R.drawable.wrong),
-                    contentDescription = "Wrong",
-                    tint = Color(0xFFDC0404),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            Spacer(Modifier.size(16.dp))
-        }
-        Button(
-            onClick = {
-                if(!viewModel.isFormValid()) {
-                    viewModel.isFormError(true)
-                }else{
-                    Toast.makeText(
-                        context,
-                        "Logged in successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-            },
-            content = {
-                Text(text = "Login", color = Color.White)
-            },
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(49.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF27A74A))
-        )
-        Spacer(Modifier.size(16.dp))
-        Text(
-            text = "Forgot Password?",
-            fontSize = 15.sp,
-            color = Color.Black,
-            modifier = Modifier.
-                    clickable {  }
-        )
-        Spacer(Modifier.size(16.dp))
-        Text(
-            text = "Privacy Policy",
-            fontSize = 15.sp,
-            color = Color.Black,
-            modifier = Modifier.
-            clickable {  }
-        )
-
-
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Bottom
-    ){
-        Row{
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = maxHeight)
+                .padding(16.dp),
+        ) {
             Spacer(Modifier.weight(1f))
-            Text(
-                text = "Doesn't have an account?",
-                fontSize = 15.sp,
-                color = Color.Black,
-            )
-            Text(
-                text = "Sign Up",
-                fontSize = 15.sp,
-                color = Color(0xFF27A74A),
-                modifier = Modifier.clickable {  }
-            )
+            Column(
+            ) {
+                Text(
+                    text = stringResource(id = R.string.header_login),
+                    style = Typography.h2,
+                    color = Color.Black
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.logo_taio),
+                    contentDescription = stringResource(R.string.logo_taio),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.size(16.dp))
+                TextFields(
+                    label = stringResource(R.string.email_label),
+                    text = loginState.email,
+                    onValueChange = { email -> viewModel.updateEmail(email) },
+                    errorState = loginState.isFormError,
+                    isError = { error -> viewModel.isFormError(error) },
+                    leadIcon = R.drawable.profile,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
+                )
+
+                Spacer(Modifier.size(16.dp))
+                PassField(
+                    label = stringResource(R.string.password_label),
+                    text = loginState.password,
+                    onValueChange = { password -> viewModel.updatePassword(password)},
+                    onViewClick = { viewModel.isVisible() },
+                    errorState = loginState.isFormError,
+                    isError = { error -> viewModel.isFormError(error)},
+                    passwordVisibility = loginState.passwordVisibility,
+                    leadIcon = R.drawable.password,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    )
+                )
+
+                Spacer(Modifier.size(16.dp))
+                if (loginState.isFormError) {
+                    Row{
+                        Spacer(Modifier.weight(1f))
+                        Text(
+                            text = stringResource(R.string.login_form_error),
+                            color = Red500,
+                            style = Typography.subtitle1,
+                            modifier = Modifier.padding(PaddingValues(end = 10.dp))
+                        )
+                        Icon(
+                            painterResource(R.drawable.wrong),
+                            contentDescription = stringResource(R.string.content_description_wrong),
+                            tint = Red500,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Spacer(Modifier.size(16.dp))
+                }
+                Button(
+                    onClick = {
+                        if(!viewModel.isFormValid()) {
+                            viewModel.isFormError(true)
+                        }else{
+                        }
+
+                    },
+                    content = {
+                        Text(
+                            text = stringResource(R.string.login_label),
+                            style = Typography.button,
+                            color = Color.White
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(49.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Green500)
+                )
+                Spacer(Modifier.size(16.dp))
+                Text(
+                    text = stringResource(R.string.forgot_password),
+                    style = Typography.subtitle1,
+                    color = Color.Black,
+                    modifier = Modifier.
+                    clickable {  }
+                )
+                Spacer(Modifier.size(16.dp))
+                Text(
+                    text = stringResource(id = R.string.privacy_policy),
+                    style = Typography.subtitle1,
+                    color = Color.Black,
+                    modifier = Modifier.
+                    clickable {  }
+                )
+
+
+            }
+            Spacer(Modifier.weight(1f))
+            Column(
+            ){
+                Row{
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = stringResource(id = R.string.no_account),
+                        style = Typography.subtitle1,
+                        color = Color.Black,
+                        modifier = Modifier.padding(end = 5.dp)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.sign_up),
+                        style = Typography.subtitle1,
+                        color = Green500,
+                        modifier = Modifier.clickable {  }
+                    )
+                }
+            }
         }
     }
-
 
 }
 
@@ -191,7 +191,7 @@ fun TextFields(
 
     Text(
         text = label,
-        fontSize = 15.sp,
+        style = Typography.subtitle1,
         color = Color.Black,
         modifier = Modifier.padding(bottom = 10.dp)
     )
@@ -199,6 +199,7 @@ fun TextFields(
         modifier = Modifier
             .fillMaxWidth(),
         value = text,
+        textStyle = Typography.subtitle2,
         enabled = enabled,
         onValueChange = {
             if (errorState) {
@@ -210,15 +211,16 @@ fun TextFields(
             Icon(
                 painterResource(leadIcon),
                 contentDescription = label,
-                tint = if (errorState) Color(0xFFDC0404) else Color(0xFFC5C5C5),
+                tint = if (errorState) Red500 else Gray300,
                 modifier = Modifier.size(24.dp)
             )
         },
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            unfocusedBorderColor = if (errorState) Color(0xFFDC0404) else Color(0xFFC5C5C5),
-            focusedBorderColor = Color(0xFF27A74A)
+            unfocusedBorderColor = if (errorState) Red500 else Gray300,
+            focusedBorderColor = Green500,
+            textColor = Gray700
         )
 
     )
@@ -240,12 +242,13 @@ fun PassField(
 ){
     Text(
         text = label,
-        fontSize = 15.sp,
-        color = Color(0xFF000000),
+        style = Typography.subtitle1,
+        color = Color.Black,
         modifier = Modifier.padding(bottom = 10.dp)
     )
     OutlinedTextField(
         value = text,
+        textStyle = Typography.subtitle2,
         enabled = enabled,
         onValueChange = {
             if (errorState) {
@@ -256,14 +259,15 @@ fun PassField(
         modifier = Modifier
             .fillMaxWidth(),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            unfocusedBorderColor = if (errorState) Color(0xFFDC0404) else Color(0xFFC5C5C5),
-            focusedBorderColor = Color(0xFF27A74A)
+            unfocusedBorderColor = if (errorState) Red500 else Gray300,
+            focusedBorderColor = Green500,
+            textColor = Gray700
         ),
         leadingIcon = {
             Icon(
                 painterResource(leadIcon),
-                contentDescription = "Password",
-                tint = if (errorState) Color(0xFFDC0404) else Color(0xFFC5C5C5),
+                contentDescription = stringResource(R.string.content_description_password),
+                tint = if (errorState) Red500 else Gray300,
                 modifier = Modifier.size(24.dp)
             )
         },
@@ -275,8 +279,8 @@ fun PassField(
             }) {
                 Icon(
                     painter = painterResource(if (passwordVisibility) R.drawable.eye_off else R.drawable.eye_on),
-                    contentDescription = "visibility",
-                    tint = Color(0xFF27A74A),
+                    contentDescription = stringResource(R.string.content_description_visibility),
+                    tint = Green500,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -285,7 +289,7 @@ fun PassField(
     )
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun LoginPreview(){
     val navController = rememberNavController()

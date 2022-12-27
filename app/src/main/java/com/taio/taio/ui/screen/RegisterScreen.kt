@@ -10,21 +10,25 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.taio.taio.R
 import com.taio.taio.data.RegisterState
+import com.taio.taio.ui.theme.Gray300
+import com.taio.taio.ui.theme.Green500
+import com.taio.taio.ui.theme.Green700
+import com.taio.taio.ui.theme.Typography
 import com.taio.taio.viewmodel.RegisterViewModel
 
 @Composable
@@ -78,70 +82,75 @@ fun FirstPage(
     page: MutableState<Int>,
     focusManager: FocusManager,
 ){
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-
-    ){
-        Text(
-            text = "Welcome To",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black
-        )
-        Image(
-            painter = painterResource(id = R.drawable.logo_taio),
-            contentDescription = "Logo Taio",
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.size(16.dp))
-        TextFields(
-            label = "Nama Lengkap",
-            text = registerState.name,
-            onValueChange = {name -> viewModel.onNameChange(name)},
-            isError = {error -> viewModel.isFormError(error) },
-            errorState = registerState.isFormError,
-            leadIcon = R.drawable.profile_bold,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
-            )
-        )
-        Spacer(Modifier.size(16.dp))
-        TextFields(
-            label = "Username",
-            text = registerState.userName,
-            onValueChange = {userName -> viewModel.onUserNameChange(userName)},
-            isError = {error -> viewModel.isFormError(error) },
-            errorState = registerState.isFormError,
-            leadIcon = R.drawable.username,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            )
-        )
-        Spacer(Modifier.size(16.dp))
-        Spacer(Modifier.weight(1f))
-        Footer(
-            label = "Next",
-            onButtonClick = {
-                if(!viewModel.isPageOneValid()) {
-                    viewModel.isFormError(true)
-                }else{
-                    page.value = 2
-                }
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = maxHeight)
+                .padding(16.dp),
+        ){
+            Column(
+            ){
+                Text(
+                    text = stringResource(R.string.header_login),
+                    style = Typography.h2,
+                    color = Color.Black
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.logo_taio),
+                    contentDescription = stringResource(id = R.string.logo_taio),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.size(16.dp))
+                TextFields(
+                    label = stringResource(R.string.name_label),
+                    text = registerState.name,
+                    onValueChange = { name -> viewModel.onNameChange(name)},
+                    isError = { error -> viewModel.isFormError(error) },
+                    errorState = registerState.isFormError,
+                    leadIcon = R.drawable.profile_bold,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
+                )
+                Spacer(Modifier.size(16.dp))
+                TextFields(
+                    label = stringResource(R.string.username_label),
+                    text = registerState.userName,
+                    onValueChange = { userName -> viewModel.onUserNameChange(userName)},
+                    isError = { error -> viewModel.isFormError(error) },
+                    errorState = registerState.isFormError,
+                    leadIcon = R.drawable.username,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    )
+                )
+                Spacer(Modifier.size(16.dp))
             }
-        )
+            Spacer(Modifier.weight(1f))
+            Footer(
+                label = stringResource(id = R.string.next_button),
+                onButtonClick = {
+                    if(!viewModel.isPageOneValid()) {
+                        viewModel.isFormError(true)
+                    }else{
+                        page.value = 2
+                    }
+                }
+            )
+        }
     }
+
 
 
 }
@@ -153,58 +162,61 @@ fun SecondPage(
     page: MutableState<Int>,
     focusManager: FocusManager,
 ){
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-    ){
-        TextFields(
-            label = "Email",
-            text = registerState.email,
-            onValueChange = {email -> viewModel.onEmailChange(email)},
-            isError = {error -> viewModel.isFormError(error) },
-            errorState = registerState.isFormError,
-            leadIcon = R.drawable.profile_bold,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = maxHeight)
+                .padding(16.dp),
+        ) {
+            TextFields(
+                label = stringResource(id = R.string.email_label),
+                text = registerState.email,
+                onValueChange = { email -> viewModel.onEmailChange(email) },
+                isError = { error -> viewModel.isFormError(error) },
+                errorState = registerState.isFormError,
+                leadIcon = R.drawable.profile_bold,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                )
+            )
+            Spacer(Modifier.size(16.dp))
+            TextFields(
+                label = stringResource(id = R.string.phone_number_label),
+                text = registerState.phone,
+                onValueChange = { phone -> viewModel.onPhoneChange(phone) },
+                isError = { error -> viewModel.isFormError(error) },
+                errorState = registerState.isFormError,
+                leadIcon = R.drawable.username,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                )
+            )
+            Spacer(Modifier.size(16.dp))
+            Spacer(Modifier.weight(1f))
+            Footer(
+                label = stringResource(R.string.next_button),
+                onButtonClick = {
+                    if (!viewModel.isPageTwoValid()) {
+                        viewModel.isFormError(true)
+                    } else {
+                        page.value = 3
+                    }
                 }
             )
-        )
-        Spacer(Modifier.size(16.dp))
-        TextFields(
-            label = "Phone Number",
-            text = registerState.phone,
-            onValueChange = {phone -> viewModel.onPhoneChange(phone)},
-            isError = {error -> viewModel.isFormError(error) },
-            errorState = registerState.isFormError,
-            leadIcon = R.drawable.username,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            )
-        )
-        Spacer(Modifier.size(16.dp))
-        Spacer(Modifier.weight(1f))
-        Footer(
-            label = "Next",
-            onButtonClick = {
-                if(!viewModel.isPageTwoValid()) {
-                    viewModel.isFormError(true)
-                }else{
-                    page.value = 3
-                }
-            }
-        )
+        }
     }
 
 }
@@ -216,61 +228,64 @@ fun ThirdPage(
     page: MutableState<Int>,
     focusManager: FocusManager,
 ){
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-    ){
-        PassField(
-            label = "Password",
-            text = registerState.password,
-            errorState = registerState.isFormError,
-            onValueChange = {password -> viewModel.onPasswordChange(password)},
-            onViewClick = { viewModel.isVisible() },
-            isError = {error -> viewModel.isFormError(error)},
-            passwordVisibility = registerState.passwordVisibility,
-            leadIcon = R.drawable.password,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = maxHeight)
+                .padding(16.dp),
+        ) {
+            PassField(
+                label = stringResource(id = R.string.password_label),
+                text = registerState.password,
+                errorState = registerState.isFormError,
+                onValueChange = { password -> viewModel.onPasswordChange(password) },
+                onViewClick = { viewModel.isVisible() },
+                isError = { error -> viewModel.isFormError(error) },
+                passwordVisibility = registerState.passwordVisibility,
+                leadIcon = R.drawable.password,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                )
             )
-        )
-        Spacer(Modifier.size(16.dp))
-        PassField(
-            label = "Password Confirm",
-            text = registerState.passConfirm,
-            errorState = registerState.isFormError,
-            onValueChange = {password -> viewModel.onPassConfirmChange(password)},
-            onViewClick = { viewModel.isVisible() },
-            isError = {error -> viewModel.isFormError(error)},
-            passwordVisibility = registerState.passwordVisibility,
-            leadIcon = R.drawable.password_confirm,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
+            Spacer(Modifier.size(16.dp))
+            PassField(
+                label = stringResource(R.string.password_confirm_label),
+                text = registerState.passConfirm,
+                errorState = registerState.isFormError,
+                onValueChange = { password -> viewModel.onPassConfirmChange(password) },
+                onViewClick = { viewModel.isVisible() },
+                isError = { error -> viewModel.isFormError(error) },
+                passwordVisibility = registerState.passwordVisibility,
+                leadIcon = R.drawable.password_confirm,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                )
             )
-        )
-        Spacer(Modifier.size(16.dp))
-        Spacer(Modifier.weight(1f))
-        Footer(
-            label = "Next",
-            onButtonClick = {
+            Spacer(Modifier.size(16.dp))
+            Spacer(Modifier.weight(1f))
+            Footer(
+                label = stringResource(R.string.next_button),
+                onButtonClick = {
 
-                if(!viewModel.isPageThreeValid() || !viewModel.isPasswordMatch() || !viewModel.isPassMetRequirement()) {
-                    viewModel.isFormError(true)
-                }else{
-                    page.value = 4
+                    if (!viewModel.isPageThreeValid() || !viewModel.isPasswordMatch() || !viewModel.isPassMetRequirement()) {
+                        viewModel.isFormError(true)
+                    } else {
+                        page.value = 4
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 
 }
@@ -282,129 +297,133 @@ fun LastPage(
     page: MutableState<Int>,
     focusManager: FocusManager,
 ){
-    Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-    ){
-        TextFields(
-            label = "Nama Lengkap",
-            text = registerState.name,
-            enabled = false,
-            onValueChange = {name -> viewModel.onNameChange(name)},
-            isError = {error -> viewModel.isFormError(error) },
-            errorState = registerState.isFormError,
-            leadIcon = R.drawable.profile_bold,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
-            )
-        )
-        Spacer(Modifier.size(16.dp))
-        TextFields(
-            label = "Username",
-            text = registerState.userName,
-            enabled = false,
-            onValueChange = {userName -> viewModel.onUserNameChange(userName)},
-            isError = {error -> viewModel.isFormError(error) },
-            errorState = registerState.isFormError,
-            leadIcon = R.drawable.username,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            )
-        )
-        Spacer(Modifier.size(16.dp))
-        TextFields(
-            label = "Email",
-            text = registerState.email,
-            enabled = false,
-            onValueChange = {email -> viewModel.onEmailChange(email)},
-            isError = {error -> viewModel.isFormError(error) },
-            errorState = registerState.isFormError,
-            leadIcon = R.drawable.profile_bold,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
-            )
-        )
-        Spacer(Modifier.size(16.dp))
-        TextFields(
-            label = "Phone Number",
-            text = registerState.phone,
-            enabled = false,
-            onValueChange = {phone -> viewModel.onPhoneChange(phone)},
-            isError = {error -> viewModel.isFormError(error) },
-            errorState = registerState.isFormError,
-            leadIcon = R.drawable.username,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            )
-        )
-        Spacer(Modifier.size(16.dp))
-        PassField(
-            label = "Password",
-            text = registerState.password,
-            enabled = false,
-            errorState = registerState.isFormError,
-            onValueChange = {password -> viewModel.onPasswordChange(password)},
-            onViewClick = { viewModel.isVisible() },
-            isError = {error -> viewModel.isFormError(error)},
-            passwordVisibility = registerState.passwordVisibility,
-            leadIcon = R.drawable.password,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
-            )
-        )
-        Spacer(Modifier.size(16.dp))
-        Row{
-            Checkbox(
-                checked = registerState.checkBox,
-                onCheckedChange = {viewModel.onCheckBoxChange()},
-                colors = CheckboxDefaults.colors(
-                    checkedColor = Color(0xFF27A74A),
-                    checkmarkColor = Color.White,
-                    uncheckedColor = Color(0xFFC5C5C5)
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = maxHeight)
+                .padding(16.dp),
+        ) {
+            TextFields(
+                label = stringResource(id = R.string.name_label),
+                text = registerState.name,
+                enabled = false,
+                onValueChange = { name -> viewModel.onNameChange(name) },
+                isError = { error -> viewModel.isFormError(error) },
+                errorState = registerState.isFormError,
+                leadIcon = R.drawable.profile_bold,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
                 )
             )
-            Text(
-                text = "saya telah menyetujui persyaratan dan persetujuan (privacy & policy) tandatangan.io"
+            Spacer(Modifier.size(16.dp))
+            TextFields(
+                label = stringResource(R.string.username_label),
+                text = registerState.userName,
+                enabled = false,
+                onValueChange = { userName -> viewModel.onUserNameChange(userName) },
+                isError = { error -> viewModel.isFormError(error) },
+                errorState = registerState.isFormError,
+                leadIcon = R.drawable.username,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                )
+            )
+            Spacer(Modifier.size(16.dp))
+            TextFields(
+                label = stringResource(id = R.string.email_label),
+                text = registerState.email,
+                enabled = false,
+                onValueChange = { email -> viewModel.onEmailChange(email) },
+                isError = { error -> viewModel.isFormError(error) },
+                errorState = registerState.isFormError,
+                leadIcon = R.drawable.profile_bold,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                )
+            )
+            Spacer(Modifier.size(16.dp))
+            TextFields(
+                label = stringResource(id = R.string.phone_number_label),
+                text = registerState.phone,
+                enabled = false,
+                onValueChange = { phone -> viewModel.onPhoneChange(phone) },
+                isError = { error -> viewModel.isFormError(error) },
+                errorState = registerState.isFormError,
+                leadIcon = R.drawable.username,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                )
+            )
+            Spacer(Modifier.size(16.dp))
+            PassField(
+                label = stringResource(id = R.string.password_label),
+                text = registerState.password,
+                enabled = false,
+                errorState = registerState.isFormError,
+                onValueChange = { password -> viewModel.onPasswordChange(password) },
+                onViewClick = { viewModel.isVisible() },
+                isError = { error -> viewModel.isFormError(error) },
+                passwordVisibility = registerState.passwordVisibility,
+                leadIcon = R.drawable.password,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                )
+            )
+            Spacer(Modifier.size(16.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = registerState.checkBox,
+                    onCheckedChange = { viewModel.onCheckBoxChange() },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Green700,
+                        checkmarkColor = Color.White,
+                        uncheckedColor = Gray300
+                    )
+                )
+                Text(
+                    text = stringResource(R.string.check_privacy_policy),
+                    style = Typography.overline
+                )
+            }
+            Spacer(Modifier.size(16.dp))
+            Spacer(Modifier.weight(1f))
+            Footer(
+                label = stringResource(id = R.string.sign_up),
+                onButtonClick = {
+                    if (!viewModel.isLastPageValid()) {
+                        viewModel.isFormError(true)
+                    } else {
+                        page.value = 1
+                    }
+                }
             )
         }
-        Spacer(Modifier.size(16.dp))
-        Spacer(Modifier.weight(1f))
-        Footer(
-            label = "Register",
-            onButtonClick = {
-                if(!viewModel.isLastPageValid()) {
-                    viewModel.isFormError(true)
-                }else{
-                    page.value = 1
-                }
-            }
-        )
     }
 
 
@@ -415,48 +434,56 @@ fun Footer(
     label: String,
     onButtonClick: () -> Unit
 ){
-    Button(
-        onClick = {
-            onButtonClick()
-        },
-        content = {
-            Text(text = label, color = Color.White)
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(49.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF27A74A))
-    )
-    Spacer(Modifier.size(16.dp))
-    Row{
-        Text(
-            text = "Already have an account? ",
-            fontSize = 15.sp,
-            color = Color.Black,
+    Column(
+    ){
+        Button(
+            onClick = {
+                onButtonClick()
+            },
+            content = {
+                Text(
+                    text = label,
+                    style = Typography.button,
+                    color = Color.White
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(49.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Green500)
         )
+        Spacer(Modifier.size(16.dp))
+        Row{
+            Text(
+                text = stringResource(R.string.have_account),
+                style = Typography.subtitle1,
+                color = Color.Black,
+                modifier = Modifier.padding(end = 10.dp)
+            )
+            Text(
+                text = stringResource(R.string.login_label),
+                style = Typography.subtitle1,
+                color = Green500,
+                modifier = Modifier.clickable {  }
+            )
+        }
+        Spacer(Modifier.size(16.dp))
         Text(
-            text = "Sign In",
-            fontSize = 15.sp,
-            color = Color(0xFF27A74A),
-            modifier = Modifier.clickable {  }
+            text = stringResource(R.string.forgot_password),
+            style = Typography.subtitle1,
+            color = Color.Black,
+            modifier = Modifier.
+            clickable {  }
+        )
+        Spacer(Modifier.size(16.dp))
+        Text(
+            text = stringResource(id = R.string.privacy_policy),
+            style = Typography.subtitle1,
+            color = Color.Black,
+            modifier = Modifier.
+            clickable {  }
         )
     }
-    Spacer(Modifier.size(16.dp))
-    Text(
-        text = "Forgot Password?",
-        fontSize = 15.sp,
-        color = Color.Black,
-        modifier = Modifier.
-        clickable {  }
-    )
-    Spacer(Modifier.size(16.dp))
-    Text(
-        text = "Privacy Policy",
-        fontSize = 15.sp,
-        color = Color.Black,
-        modifier = Modifier.
-        clickable {  }
-    )
 }
 
 @Preview(showSystemUi = true, showBackground = true)

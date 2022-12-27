@@ -56,7 +56,7 @@ fun HomeScreen(
             )
             Text(
                 text = stringResource(R.string.greeter, authenticatedUser.name),
-                style = Typography.h1,
+                style = Typography.h4,
                 modifier = Modifier.padding(start = 15.dp)
             )
         }
@@ -71,26 +71,22 @@ fun HomeScreen(
         ){
             Icon(
                 painter = painterResource(id = R.drawable.send),
-                contentDescription = "Send Icon",
+                contentDescription = null,
                 tint = MaterialTheme.colors.primary,
                 modifier = Modifier.padding(end = 15.dp)
             )
             Text(
-                text = "Minta Cepat",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.W500,
-                color = Color(0xFF000000),
-                lineHeight = 21.sp
+                text = stringResource(R.string.fast_request),
+                style = Typography.h6,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier
                     .clickable { },
-                text = "Selengkapnya",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W400,
-                color = Color(0xFF615D5D),
-                lineHeight = 18.sp,
+                text = stringResource(R.string.more),
+                style = Typography.body1,
+                color = Gray700,
             )
         }
 
@@ -108,19 +104,16 @@ fun HomeScreen(
                 modifier = Modifier.padding(end = 15.dp)
             )
             Text(
-                text = "Permintaan",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.W500,
+                text = stringResource(R.string.request),
+                style = Typography.h6
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier.clickable {  },
                 textAlign = TextAlign.End,
-                text = "Selengkapnya",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W400,
-                color = Color(0xFF615D5D),
-                lineHeight = 18.sp,
+                text = stringResource(R.string.more),
+                style = Typography.body1,
+                color = Gray700,
             )
         }
 
@@ -138,19 +131,16 @@ fun HomeScreen(
                 modifier = Modifier.padding(end = 15.dp)
             )
             Text(
-                text = "Pengajuan",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.W500,
+                text = stringResource(R.string.submission),
+                style = Typography.h6
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 modifier = Modifier.clickable {  },
                 textAlign = TextAlign.End,
-                text = "Selengkapnya",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W400,
-                color = Color(0xFF615D5D),
-                lineHeight = 18.sp,
+                text = stringResource(R.string.more),
+                style = Typography.body1,
+                color = Gray700,
             )
         }
 
@@ -176,7 +166,7 @@ fun SearchBar(
     ) {
         Icon(
             Icons.Sharp.Search,
-            "search icon",
+            null,
             modifier
                 .size(20.dp)
         )
@@ -236,7 +226,8 @@ fun FastRequest(user: User, modifier: Modifier = Modifier, onClick: () -> Unit){
     Row(
         modifier = modifier
             .clickable { onClick() }
-            .padding(PaddingValues(top = 15.dp))
+            .padding(PaddingValues(top = 15.dp)),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier = modifier
@@ -249,9 +240,8 @@ fun FastRequest(user: User, modifier: Modifier = Modifier, onClick: () -> Unit){
         )
         Text(
             text = user.name,
-            style = Typography.caption,
-            color = Color(0xFFA684EE),
-            lineHeight = 21.sp
+            style = Typography.body1,
+            color = Blue500
         )
     }
 }
@@ -281,17 +271,18 @@ fun Request(request: UserRequest, modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = request.title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
+                    style = Typography.h6
                 )
                 Text(
                     text = request.name,
-                    style = Typography.caption,
+                    style = Typography.body2,
+                    color = Gray700,
                     modifier = modifier.padding(PaddingValues(top = 5.dp))
                 )
                 Text(
                     text = request.desc,
-                    style = Typography.caption,
+                    style = Typography.body2,
+                    color = Gray700,
                     modifier = modifier.padding(PaddingValues(top = 5.dp))
                 )
                 PreviewButton({})
@@ -344,30 +335,32 @@ fun Requested(request: UserRequested, modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = request.title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
+                    style = Typography.h6
                 )
                 Text(
                     text = request.name,
-                    style = Typography.caption,
+                    style = Typography.body2,
+                    color = Gray700,
                     modifier = modifier.padding(PaddingValues(top = 5.dp))
                 )
                 if (request.status == 1){
                     Text(
                         text = stringResource(R.string.reject_message),
-                        style = Typography.caption,
+                        style = Typography.body1,
                         modifier = modifier.padding(PaddingValues(top = 5.dp))
                     )
                     Text(
                         text = request.rejectMessage,
-                        style = Typography.caption,
+                        style = Typography.body2,
+                        color = Gray700,
                         modifier = modifier.padding(PaddingValues(top = 5.dp))
                     )
                 }
                 else {
                     Text(
                         text = request.desc,
-                        style = Typography.caption,
+                        style = Typography.body2,
+                        color = Gray700,
                         modifier = modifier.padding(PaddingValues(top = 5.dp))
                     )
                 }
@@ -385,7 +378,7 @@ fun Requested(request: UserRequested, modifier: Modifier = Modifier) {
                         Spacer(modifier = Modifier.weight(1f))
                         RequestButton(
                             text = stringResource(R.string.download),
-                            buttonColor = Color.Blue,
+                            buttonColor = Blue500,
                             textColor = Color.White,
                             onClick = {}
                         )
@@ -393,14 +386,14 @@ fun Requested(request: UserRequested, modifier: Modifier = Modifier) {
                     if (request.status == 0){
                         RequestedStatus(
                             text = stringResource(R.string.sent),
-                            Color.Yellow,
+                            Yellow500,
                             MaterialTheme.colors.onSecondary
                         )
                     }
                     if (request.status == 1){
                         RequestedStatus(
                             text = stringResource(R.string.rejected),
-                            Color.Gray,
+                            Gray700,
                             MaterialTheme.colors.onPrimary
                         )
                     }
@@ -415,16 +408,19 @@ fun PreviewButton(onPreviewClick: () -> Unit) {
     Button(
         onClick = onPreviewClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
+        border = BorderStroke(1.dp, Blue500),
         modifier = Modifier.padding(top = 5.dp)
     ) {
-        Image(
+        Icon(
             painterResource(id = R.drawable.document),
             contentDescription = null,
+            Modifier,
+            Blue500
         )
         Text(
             text = stringResource(R.string.document_preview),
-            color = Purple200,
+            style = Typography.body1,
+            color = Blue500,
             modifier = Modifier
                 .padding(start = 5.dp)
         )
@@ -446,7 +442,7 @@ fun RequestButton(
     ) {
         Text(
             text = text,
-            fontWeight = FontWeight.Light,
+            style = Typography.subtitle2,
             color = textColor
         )
     }
@@ -465,7 +461,7 @@ fun RequestedStatus(
             .background(background)
             .padding(5.dp),
         color = textColor,
-        style = Typography.button
+        style = Typography.caption
     )
 }
 
