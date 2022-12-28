@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -16,30 +17,25 @@ import androidx.compose.ui.unit.sp
 import com.taio.taio.data.DataSource
 import com.taio.taio.domain.model.UserRequest
 import com.taio.taio.ui.theme.TandatanganioMobileTheme
+import com.taio.taio.ui.theme.Typography
+import com.taio.taio.R
 
 @Composable
 fun RequestScreen() {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = "Permintaan",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.W500,
-            color = Color(0xFF000000),
-            lineHeight = 21.sp
-        )
-        val data = DataSource().loadRequest()
-        RequestLongList(data)
-    }
+    val data = DataSource().loadRequest()
+    RequestLongList(data)
 }
 
 @Composable
 fun RequestLongList(requestList: List<UserRequest>) {
-    LazyColumn(modifier = Modifier) {
+    LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
+        item{
+            Text(
+                text = stringResource(R.string.request),
+                style = Typography.h3,
+                color = Color.Black,
+            )
+        }
         items(items = requestList) { request ->
             Request(request = request)
         }

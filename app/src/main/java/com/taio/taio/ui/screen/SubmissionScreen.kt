@@ -9,37 +9,33 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.taio.taio.R
 import com.taio.taio.data.DataSource
 import com.taio.taio.ui.theme.TandatanganioMobileTheme
 import com.taio.taio.domain.model.UserRequested
+import com.taio.taio.ui.theme.Typography
 
 @Composable
 fun SubmissionScreen() {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = "Pengajuan",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.W500,
-            color = Color(0xFF000000),
-            lineHeight = 21.sp
-        )
-        val data = DataSource().loadRequested()
-        SubmissionLongList(data)
-    }
+    val data = DataSource().loadRequested()
+    SubmissionLongList(data)
 }
 
 @Composable
 fun SubmissionLongList(requested: List<UserRequested>){
-    LazyColumn(modifier = Modifier){
+    LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)){
+        item{
+            Text(
+                text = stringResource(R.string.submission),
+                style = Typography.h3,
+                color = Color.Black,
+            )
+        }
         items(items = requested) { request ->
             Requested(request = request)
         }

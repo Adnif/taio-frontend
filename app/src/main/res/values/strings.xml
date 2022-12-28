@@ -2,6 +2,10 @@
     <string name="app_name">Tandatangan.io Mobile</string>
     <string name="search_placeholder">Mau minta tandatangan siapa?</string>
     <string name="greeter">Halo, Selamat Datang\n%s</string>
+    <string name="fast_request">Minta Cepat</string>
+    <string name="more">Selengkapnya</string>
+    <string name="request">Permintaan</string>
+    <string name="submission">Pengajuan</string>
     <string name="reject">Tolak</string>
     <string name="accept">Terima</string>
     <string name="document_preview">Preview Dokumen</string>
@@ -10,4 +14,30 @@
     <string name="rejected">Permohonan Ditolak</string>
     <string name="download">Unduh</string>
     <string name="reject_message">Alasan penolakan</string>
+    <string name="header_login">Selamat Datang Di</string>
+    <string name="logo_taio">Logo Taio</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Kata Sandi</string>
+    <string name="content_description_password">Kata Sandi</string>
+    <string name="content_description_visibility">Visibilitas</string>
+    <string name="login_form_error">email atau password salah</string>
+    <string name="content_description_wrong">Salah</string>
+    <string name="login_label">Masuk</string>
+    <string name="forgot_password">Lupa Kata Sandi ?</string>
+    <string name="privacy_policy">Kebijakan Privasi</string>
+    <string name="no_account">Belum mempunyai akun ?</string>
+    <string name="sign_up">Daftar</string>
+    <string name="name_label">Nama Lengkap</string>
+    <string name="username_label">Nama Pengguna</string>
+    <string name="next_button">Selanjutnya</string>
+    <string name="phone_number_label">Nomor Telepon</string>
+    <string name="password_confirm_label">Konfirmasi Kata Sandi</string>
+    <string name="check_privacy_policy">saya telah menyetujui persyaratan dan persetujuan (privacy &amp; policy) tandatangan.io</string>
+    <string name="have_account">Sudah mempunyai akun ?</string>
+    <string name="skip">Lewati</string>
+    <string name="name">Tandatangan.io</string>
+    <string name="landing_header">3 Langkah Mudah</string>
+    <string name="content_description_pager">Pager Image</string>
+    <string name="agreement_privacy_policy">Dengan menggunakan ttd.io Anda menyetujui aturan privacy dan policy kami</string>
+
 </resources>
