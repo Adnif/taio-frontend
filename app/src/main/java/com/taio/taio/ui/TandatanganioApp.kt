@@ -24,7 +24,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.taio.taio.R
 import com.taio.taio.domain.model.User
+import com.taio.taio.ui.screen.CreateSignatureScreen
 import com.taio.taio.ui.screen.HomeScreen
+import com.taio.taio.ui.screen.ListSignatureScreen
+import com.taio.taio.ui.screen.TestCreateScreen
 import com.taio.taio.ui.theme.TandatanganioMobileTheme
 import com.taio.taio.ui.theme.fonts
 
@@ -62,6 +65,12 @@ sealed class TandatanganioScreen(
         title = "Profile",
         icon = R.drawable.profile
     )
+
+    object Create : TandatanganioScreen(
+        route = "cretaesignature",
+        title = "Create Signature",
+        icon = R.drawable.generated_count
+    )
 }
 
 @Composable
@@ -85,6 +94,12 @@ fun TandatanganioNavGraph(navController: NavHostController) {
         composable(route = TandatanganioScreen.Profile.route) {
             HomeScreen(User(0, ""))
         }
+        composable(route = "ListSignature"){
+            ListSignatureScreen(navController = navController)
+        }
+        composable(route = TandatanganioScreen.Create.route){
+            TestCreateScreen(navController = navController)
+        }
     }
 }
 
@@ -100,7 +115,7 @@ fun TandatanganioApp() {
         floatingActionButton = {
             FloatingActionButton(
                 shape = CircleShape,
-                onClick = { TODO() },
+                onClick = {navController.navigate("ListSignature")},
                 backgroundColor = MaterialTheme.colors.primary,
                 contentColor = MaterialTheme.colors.secondary
             ) {
