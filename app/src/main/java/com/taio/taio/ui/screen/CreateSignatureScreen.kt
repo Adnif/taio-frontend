@@ -22,8 +22,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.taio.taio.data.CreateState
 import com.taio.taio.viewmodel.CreateSignatureViewModel
+
+@Composable
+fun TestCreateScreen(navController: NavController){
+    CreateSignatureScreen()
+}
 
 @Composable
 fun CreateSignatureScreen(viewModel: CreateSignatureViewModel = viewModel()){
@@ -41,7 +47,8 @@ fun CreateSignatureScreen(viewModel: CreateSignatureViewModel = viewModel()){
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier
+            .fillMaxHeight(),
         topBar = {
             TopAppBar() {
                 Text(
@@ -114,7 +121,7 @@ fun PageOne(
             label = "Tanggal Dokumen*",
             placeholder = "Tanggal(yyyy/mm/dd)",
             text = createState.documentDate,
-            onValueChange = {documentDate -> viewModel.onDocName(documentDate)},
+            onValueChange = {documentDate -> viewModel.onDocDate(documentDate)},
             isError = {error -> viewModel.isFormError(error)},
             errorState = createState.isFormError,
             keyboardOptions = KeyboardOptions(
@@ -162,8 +169,7 @@ fun PageOne(
                 }
             )
         )
-        Spacer(Modifier.size(80
-            .dp))
+        Spacer(Modifier.size(80.dp))
         Spacer(Modifier.weight(1f))
         ButtonFooter(
             label = "Next",
@@ -175,6 +181,7 @@ fun PageOne(
                 }
             }
         )
+        Spacer(Modifier.size(80.dp))
     }
 }
 
@@ -185,7 +192,12 @@ fun PageTwo(
     page: MutableState<Int>,
     focusManager: FocusManager
 ){
+    Column(modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .padding(16.dp)
+        .padding(top = 10.dp)) {
 
+    }
 }
 
 @Composable

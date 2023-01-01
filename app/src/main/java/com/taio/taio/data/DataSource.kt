@@ -1,9 +1,11 @@
 package com.taio.taio.data
 
 import com.taio.taio.R
+import com.taio.taio.domain.model.SiganatureList
 import com.taio.taio.domain.model.User
 import com.taio.taio.domain.model.UserRequest
 import com.taio.taio.domain.model.UserRequested
+import java.security.Signature
 
 class DataSource() {
     fun loadFastRequest(): List<User> {
@@ -58,6 +60,35 @@ class DataSource() {
                 "Ini deskripsi yang panjang banget ceritaya buat ngetes doang",
                 2
             ),
+        )
+    }
+
+    fun loadListSignature(): List<SiganatureList> {
+        return listOf<SiganatureList>(
+            SiganatureList(
+                "Test Aja",
+                "31/12/2022",
+                "12345678",
+                "Test aja udah ini buat deskripsi dokumen tanda tangan"
+            ),
+            SiganatureList(
+                "Test Aja",
+                "31/12/2022",
+                "12345678",
+                "Test aja udah ini buat deskripsi dokumen tanda tangan"
+            ),
+            SiganatureList(
+                "Test Aja",
+                "31/12/2022",
+                "12345678",
+                "Test aja udah ini buat deskripsi dokumen tanda tangan"
+            ),
+            SiganatureList(
+                "Test Aja",
+                "31/12/2022",
+                "12345678",
+                "Test aja udah ini buat deskripsi dokumen tanda tangan"
+            )
         )
     }
 }
