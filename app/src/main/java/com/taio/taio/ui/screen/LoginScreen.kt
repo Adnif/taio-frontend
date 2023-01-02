@@ -1,5 +1,6 @@
 package com.taio.taio.ui.screen
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,8 +27,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.taio.taio.R
 import com.taio.taio.data.LoginState
+import com.taio.taio.data.api.AuthApi
+import com.taio.taio.data.api.LoginCredentials
+import com.taio.taio.data.api.LoginResponse
 import com.taio.taio.ui.theme.*
 import com.taio.taio.viewmodel.LoginViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
 fun LoginScreen(
@@ -36,6 +45,31 @@ fun LoginScreen(
 ) {
     val loginState: LoginState = viewModel.loginState.collectAsState().value
     val focusManager = LocalFocusManager.current
+
+    val api = Retrofit.Builder()
+        .baseUrl("http://localhost:8000/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(AuthApi::class.java)
+
+    fun login(email: String, password: String){
+        val loginCredentials = LoginCredentials(email, password)
+        api.login(loginCredentials).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response:
+            Response<LoginResponse>) {
+                if (response.isSuccessful){
+                    val accessToken = response.body()?.accessToken
+                } else {
+
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable){
+                //
+            }
+        })
+    }
+
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -118,6 +152,7 @@ fun LoginScreen(
                         if(!viewModel.isFormValid()) {
                             viewModel.isFormError(true)
                         }else{
+
                         }
 
                     },
