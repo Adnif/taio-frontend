@@ -52,13 +52,13 @@ fun LandingScreen(){
                         painter = painterResource(id = R.drawable.logo_taio_rectangle),
                         contentDescription = stringResource(R.string.logo_taio),
                         modifier = Modifier
-                            .size(45.dp)
-                            .shadow(elevation = 2.dp)
+                            .size(50.dp)
+//                            .shadow(elevation = 2.dp)
                             .padding(end = 10.dp),
                     )
                     Text(
                         text = stringResource(id = R.string.name),
-                        style = Typography.h5,
+                        style = Typography.h4,
                         color = Color.Black
                     )
                     Spacer(Modifier.weight(1f))
