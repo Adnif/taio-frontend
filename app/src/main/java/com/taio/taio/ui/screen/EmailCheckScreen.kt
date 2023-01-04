@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.google.accompanist.pager.*
 import com.taio.taio.R
 import com.taio.taio.ui.theme.Green500
+import com.taio.taio.ui.theme.TandatanganioMobileTheme
 import com.taio.taio.ui.theme.Typography
 
 @OptIn(ExperimentalPagerApi::class)
@@ -93,10 +94,6 @@ fun EmailCheckScreen() {
             BottomLanding(label = stringResource(id = R.string.login_label)) {
                 
             }
-
-
-
-
         }
     }
 }
@@ -131,8 +128,6 @@ fun BottomLanding(
 
 @Preview
 @Composable
-fun DefaultPreview() {
-    MaterialTheme {
-        EmailCheckScreen()
-    }
+fun EmailCheckScreenPreview() {
+    EmailCheckScreen()
 }

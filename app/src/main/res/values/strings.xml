@@ -8,6 +8,7 @@
     <string name="submission">Pengajuan</string>
     <string name="reject">Tolak</string>
     <string name="accept">Terima</string>
+    <string name="save">Simpan</string>
     <string name="document_preview">Preview Dokumen</string>
     <string name="accepted">Permohonan Diterima</string>
     <string name="sent">Permohonan Terkirim</string>
@@ -40,5 +41,6 @@
     <string name="content_description_pager">Pager Image</string>
     <string name="agreement_privacy_policy">Dengan menggunakan ttd.io Anda menyetujui aturan privacy dan policy kami</string>
     <string name="email_check">Silahkan Cek Email Anda</string>
+    <string name="edit_profile">Edit Profile</string>
 
 </resources>
