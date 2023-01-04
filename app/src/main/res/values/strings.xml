@@ -42,5 +42,6 @@
     <string name="agreement_privacy_policy">Dengan menggunakan ttd.io Anda menyetujui aturan privacy dan policy kami</string>
     <string name="email_check">Silahkan Cek Email Anda</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="ttdGuide3">Hasil tanda tangan dapat dilihat pada signature preview, harap simpan terlebih dahulu tanda tangan yang telah dibuat</string>
 
 </resources>

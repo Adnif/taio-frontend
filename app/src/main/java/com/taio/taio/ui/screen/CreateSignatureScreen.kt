@@ -2,29 +2,39 @@ package com.taio.taio.ui.screen
 
 import androidx.compose.runtime.Composable
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.taio.taio.R
 import com.taio.taio.data.CreateState
+import com.taio.taio.ui.theme.Green200
 import com.taio.taio.viewmodel.CreateSignatureViewModel
+import io.ak1.drawbox.DrawBox
+import io.ak1.drawbox.DrawController
+import io.ak1.drawbox.rememberDrawController
 
 @Composable
 fun TestCreateScreen(navController: NavController){
@@ -207,7 +217,20 @@ fun PageThree(
     page: MutableState<Int>,
     focusManager: FocusManager
 ){
-
+    Column{
+        SignatureGuide()
+        SignatureCanvas()
+        SignatureGuide2()
+        ButtonFooter(
+            label = "Simpan",
+            onButtonClick = {
+                page.value = 2
+            }
+        )
+        ButtonFooterWhite(
+            label = "Kembali",
+            onButtonClick = {page.value = 2})
+    }
 }
 
 @Composable
@@ -228,6 +251,7 @@ fun ButtonFooter(
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF27A74A))
     )
 }
+
 
 /*Fun Untuk SmallTextField*/
 @Composable
@@ -324,3 +348,156 @@ fun LargeTextField(
 
     )
 }
+@Composable
+fun SignatureGuide(){
+    Column(modifier = Modifier
+        .padding(16.dp)
+    ) {
+        Row{
+            Image(painter = painterResource(R.drawable.generated_count),
+                contentDescription = "logo Signature",
+                modifier = Modifier.padding(5.dp))
+            Text(text ="Live Signature",
+                style = TextStyle(
+                    fontSize=12.sp
+                ),modifier = Modifier.padding(5.dp))
+        }
+        Spacer(modifier = Modifier.size(40.dp))
+        Text(text= "Untuk buat tanda tangan gunakan kotak yang telah disediakan",
+            style = TextStyle(
+                fontSize=12.sp, textAlign = TextAlign.Center
+            ))
+    }
+
+}
+
+@Composable
+fun SignatureCanvas(){
+    val undoVisibility = remember {mutableStateOf(false)}
+    val redoVisibility = remember {mutableStateOf(false)}
+    val drawController = rememberDrawController()
+
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .height(295.dp)
+        .border(2.dp, Green200)) {
+        drawController.setStrokeColor(Black)
+        DrawBox(drawController = drawController,
+            modifier = Modifier
+                .weight(1f, true)
+                .fillMaxSize()
+        ) {
+                undoCount, redoCount ->
+            undoVisibility.value = undoCount !=0
+            redoVisibility.value = redoCount !=0
+        }
+        ControlsBar(drawController = drawController,
+            undoVisibility = undoVisibility,
+            redoVisibility = redoVisibility )
+    }
+}
+
+
+@Composable
+fun RowScope.MenuItems(
+    @DrawableRes resId: Int,
+    desc: String,
+    colorTint: androidx.compose.ui.graphics.Color,
+    border: Boolean = false,
+    onClick: () -> Unit
+) {
+    val modifier = Modifier.size(24.dp)
+    IconButton(onClick = onClick, modifier = Modifier.weight(1f, true)) {
+        Icon(
+            painterResource(id = resId),
+            contentDescription = desc,
+            tint = colorTint,
+            modifier = if(border) modifier.border(
+                0.5.dp,
+                White,
+                shape = CircleShape
+            ) else modifier
+        )
+
+    }
+}
+
+
+@Composable
+fun ControlsBar(
+    drawController: DrawController,
+    undoVisibility: MutableState<Boolean>,
+    redoVisibility: MutableState<Boolean>,
+){
+    Row(
+        modifier = Modifier
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.SpaceAround
+    ){
+        MenuItems(
+            R.drawable.ic_baseline_undo_24,
+            "undo",
+            if (undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
+        )   {
+            if(undoVisibility.value) drawController.unDo()
+        }
+        MenuItems(
+            resId = R.drawable.ic_baseline_redo_24,
+            desc = "redo",
+            colorTint =if (redoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
+        ) {
+            if (redoVisibility.value) drawController.reDo()
+        }
+        MenuItems(
+            R.drawable.ic_baseline_reset_24,
+            "reset",
+            if(redoVisibility.value || undoVisibility.value) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
+        ){
+            drawController.reset()
+        }
+    }
+}
+
+
+@Composable
+fun SignatureGuide2(){
+    Text(text = "Hasil tanda tangan dapat dilihat pada signature, harap simpan terlebih dahulu tanda tangan yang telah dibuat",
+        style = TextStyle(
+            fontSize=12.sp,
+            color = Gray,
+            textAlign = TextAlign.Center
+        ),
+        modifier = Modifier.padding(10.dp))
+}
+
+
+@Composable
+fun ButtonFooterWhite(
+    label: String,
+    onButtonClick: () -> Unit
+){
+    Button(
+        onClick = {
+            onButtonClick()
+        },
+        content = {
+            Text(text = label, color = Black)
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(49.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = White)
+    )
+}
+
+@Composable
+fun ButtonGroupFooter(){
+    Column(modifier=Modifier.padding(16.dp)) {
+        ButtonFooter(label = "Simpan"){}
+        Spacer(modifier = Modifier.size(10.dp))
+        ButtonFooterWhite(label = "Kembali") {}
+    }
+}
+
+
+
