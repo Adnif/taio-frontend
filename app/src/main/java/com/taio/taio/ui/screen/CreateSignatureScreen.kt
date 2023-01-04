@@ -252,24 +252,6 @@ fun ButtonFooter(
     )
 }
 
-@Composable
-fun ButtonFooterWhite(
-    label: String,
-    onButtonClick: () -> Unit
-){
-    Button(
-        onClick = {
-            onButtonClick()
-        },
-        content = {
-            Text(text = label, color = Black)
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(49.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = White)
-    )
-}
 
 /*Fun Untuk SmallTextField*/
 @Composable
@@ -366,7 +348,6 @@ fun LargeTextField(
 
     )
 }
-
 @Composable
 fun TtdGuide(){
     Column(modifier = Modifier
@@ -381,7 +362,7 @@ fun TtdGuide(){
                     fontSize=12.sp
                 ),modifier = Modifier.padding(5.dp))
         }
-        Spacer(modifier = Modifier.size(70.dp))
+        Spacer(modifier = Modifier.size(40.dp))
         Text(text= "Untuk buat tanda tangan gunakan kotak yang telah disediakan",
             style = TextStyle(
                 fontSize=12.sp, textAlign = TextAlign.Center
@@ -398,7 +379,7 @@ fun TtdCanvas(){
 
     Column(modifier = Modifier
         .padding(16.dp)
-        .height(339.dp)
+        .height(295.dp)
         .border(2.dp, Green200)) {
         drawController.setStrokeColor(Black)
         DrawBox(drawController = drawController,
@@ -489,3 +470,64 @@ fun TtdGuide2(){
         modifier = Modifier.padding(10.dp))
 }
 
+
+@Composable
+fun ButtonFooterWhite(
+    label: String,
+    onButtonClick: () -> Unit
+){
+    Button(
+        onClick = {
+            onButtonClick()
+        },
+        content = {
+            Text(text = label, color = Black)
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(49.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = White)
+    )
+}
+
+@Composable
+fun ButtonGroupFooter(){
+    Column(modifier=Modifier.padding(16.dp)) {
+        ButtonFooter(label = "Simpan"){}
+        Spacer(modifier = Modifier.size(10.dp))
+        ButtonFooterWhite(label = "Kembali") {}
+    }
+}
+
+
+@Composable
+fun BuatTtdScreen(){
+    Scaffold(
+        modifier = Modifier
+            .fillMaxHeight(),
+        topBar = {
+            TopAppBar() {
+                Text(
+                    text = "Buat Tanda Tangan",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    ){
+        Column{
+            TtdGuide()
+            TtdCanvas()
+            TtdGuide2()
+            Spacer(modifier = Modifier.size(80.dp))
+            Spacer(Modifier.weight(1f))
+            ButtonGroupFooter()
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    BuatTtdScreen()
+}
