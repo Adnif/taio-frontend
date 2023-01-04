@@ -218,9 +218,9 @@ fun PageThree(
     focusManager: FocusManager
 ){
     Column{
-        TtdGuide()
-        TtdCanvas()
-        TtdGuide2()
+        SignatureGuide()
+        SignatureCanvas()
+        SignatureGuide2()
         ButtonFooter(
             label = "Simpan",
             onButtonClick = {
@@ -349,7 +349,7 @@ fun LargeTextField(
     )
 }
 @Composable
-fun TtdGuide(){
+fun SignatureGuide(){
     Column(modifier = Modifier
         .padding(16.dp)
     ) {
@@ -372,7 +372,7 @@ fun TtdGuide(){
 }
 
 @Composable
-fun TtdCanvas(){
+fun SignatureCanvas(){
     val undoVisibility = remember {mutableStateOf(false)}
     val redoVisibility = remember {mutableStateOf(false)}
     val drawController = rememberDrawController()
@@ -460,7 +460,7 @@ fun ControlsBar(
 
 
 @Composable
-fun TtdGuide2(){
+fun SignatureGuide2(){
     Text(text = "Hasil tanda tangan dapat dilihat pada signature, harap simpan terlebih dahulu tanda tangan yang telah dibuat",
         style = TextStyle(
             fontSize=12.sp,
@@ -500,34 +500,4 @@ fun ButtonGroupFooter(){
 }
 
 
-@Composable
-fun BuatTtdScreen(){
-    Scaffold(
-        modifier = Modifier
-            .fillMaxHeight(),
-        topBar = {
-            TopAppBar() {
-                Text(
-                    text = "Buat Tanda Tangan",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-    ){
-        Column{
-            TtdGuide()
-            TtdCanvas()
-            TtdGuide2()
-            Spacer(modifier = Modifier.size(80.dp))
-            Spacer(Modifier.weight(1f))
-            ButtonGroupFooter()
-        }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    BuatTtdScreen()
-}
