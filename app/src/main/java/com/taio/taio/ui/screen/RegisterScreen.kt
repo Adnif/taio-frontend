@@ -23,8 +23,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.taio.taio.R
 import com.taio.taio.data.RegisterState
+import com.taio.taio.ui.TandatanganioScreen
 import com.taio.taio.ui.theme.Gray300
 import com.taio.taio.ui.theme.Green500
 import com.taio.taio.ui.theme.Green700
@@ -32,7 +35,10 @@ import com.taio.taio.ui.theme.Typography
 import com.taio.taio.viewmodel.RegisterViewModel
 
 @Composable
-fun RegisterScreen(viewModel: RegisterViewModel = viewModel()){
+fun RegisterScreen(
+    navController: NavController,
+    viewModel: RegisterViewModel = viewModel()
+){
     val registerState = viewModel.registerState.collectAsState().value
     val page = remember { mutableStateOf(1) }
     val focusManager = LocalFocusManager.current
@@ -50,23 +56,26 @@ fun RegisterScreen(viewModel: RegisterViewModel = viewModel()){
             registerState = registerState,
             page = page,
             focusManager = focusManager,
+            navController = navController,
         )
         2 -> SecondPage(
             viewModel = viewModel,
             registerState = registerState,
             page = page,
             focusManager = focusManager,
+            navController = navController,
         )
         3 -> ThirdPage(
             viewModel = viewModel,
             registerState = registerState,
             page = page,
             focusManager = focusManager,
+            navController = navController,
         )
         else -> LastPage(
             viewModel = viewModel,
             registerState = registerState,
-            page = page,
+            navController = navController,
             focusManager = focusManager,
         )
 
@@ -81,6 +90,7 @@ fun FirstPage(
     registerState: RegisterState,
     page: MutableState<Int>,
     focusManager: FocusManager,
+    navController: NavController,
 ){
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -140,6 +150,7 @@ fun FirstPage(
             Spacer(Modifier.weight(1f))
             Footer(
                 label = stringResource(id = R.string.next_button),
+                navController = navController,
                 onButtonClick = {
                     if(!viewModel.isPageOneValid()) {
                         viewModel.isFormError(true)
@@ -161,6 +172,7 @@ fun SecondPage(
     registerState: RegisterState,
     page: MutableState<Int>,
     focusManager: FocusManager,
+    navController: NavController,
 ){
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -208,6 +220,7 @@ fun SecondPage(
             Spacer(Modifier.weight(1f))
             Footer(
                 label = stringResource(R.string.next_button),
+                navController = navController,
                 onButtonClick = {
                     if (!viewModel.isPageTwoValid()) {
                         viewModel.isFormError(true)
@@ -227,6 +240,7 @@ fun ThirdPage(
     registerState: RegisterState,
     page: MutableState<Int>,
     focusManager: FocusManager,
+    navController: NavController,
 ){
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -276,6 +290,7 @@ fun ThirdPage(
             Spacer(Modifier.weight(1f))
             Footer(
                 label = stringResource(R.string.next_button),
+                navController = navController,
                 onButtonClick = {
 
                     if (!viewModel.isPageThreeValid() || !viewModel.isPasswordMatch() || !viewModel.isPassMetRequirement()) {
@@ -294,7 +309,7 @@ fun ThirdPage(
 fun LastPage(
     viewModel: RegisterViewModel,
     registerState: RegisterState,
-    page: MutableState<Int>,
+    navController: NavController,
     focusManager: FocusManager,
 ){
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -415,11 +430,13 @@ fun LastPage(
             Spacer(Modifier.weight(1f))
             Footer(
                 label = stringResource(id = R.string.sign_up),
+                navController = navController,
                 onButtonClick = {
                     if (!viewModel.isLastPageValid()) {
                         viewModel.isFormError(true)
                     } else {
-                        page.value = 1
+                        navController.popBackStack()
+                        navController.navigate(TandatanganioScreen.EmailCheck.route)
                     }
                 }
             )
@@ -432,7 +449,8 @@ fun LastPage(
 @Composable
 fun Footer(
     label: String,
-    onButtonClick: () -> Unit
+    onButtonClick: () -> Unit,
+    navController: NavController,
 ){
     Column(
     ){
@@ -464,7 +482,10 @@ fun Footer(
                 text = stringResource(R.string.login_label),
                 style = Typography.subtitle1,
                 color = Green500,
-                modifier = Modifier.clickable {  }
+                modifier = Modifier.clickable {
+                    navController.popBackStack()
+                    navController.navigate(TandatanganioScreen.Login.route)
+                }
             )
         }
         Spacer(Modifier.size(16.dp))
@@ -489,5 +510,6 @@ fun Footer(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun RegisterScreenPreview(){
-    RegisterScreen()
+    val navController = rememberNavController()
+    RegisterScreen(navController)
 }

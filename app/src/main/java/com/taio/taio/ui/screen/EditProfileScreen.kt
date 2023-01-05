@@ -17,12 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.taio.taio.R
 import com.taio.taio.domain.model.User
+import com.taio.taio.ui.TandatanganioScreen
 import com.taio.taio.ui.theme.Typography
 
 @Composable
-fun EditProfileScreen(user: User) {
+fun EditProfileScreen(user: User, navController: NavHostController,) {
     BoxWithConstraints(modifier = Modifier
         .fillMaxSize()
         .background(color = White)
@@ -80,6 +82,8 @@ fun EditProfileScreen(user: User) {
                         .fillMaxWidth()
                     val focusManager = LocalFocusManager.current
                     val name = remember { mutableStateOf(TextFieldValue()) }
+                    val phone = remember { mutableStateOf(TextFieldValue()) }
+                    val about = remember { mutableStateOf(TextFieldValue()) }
 
                     // Field 1 : Name
                     Column() {
@@ -115,9 +119,9 @@ fun EditProfileScreen(user: User) {
                         OutlinedTextField(
                             modifier = formModifier,
                             shape = RoundedCornerShape(5.dp),
-                            value = name.value,
+                            value = phone.value,
                             onValueChange = {
-                                name.value = it
+                                phone.value = it
                             },
                             placeholder = { Text(text = "+62878874856381") },
                         )
@@ -139,9 +143,9 @@ fun EditProfileScreen(user: User) {
                                 .height(125.dp),
                             shape = RoundedCornerShape(5.dp),
                             maxLines = 5,
-                            value = name.value,
+                            value = about.value,
                             onValueChange = {
-                                name.value = it
+                                about.value = it
                             },
                             placeholder = { Text(text = "Saya suka pisang, pisang bapak budi sangat besar") },
                         )
@@ -157,6 +161,8 @@ fun EditProfileScreen(user: User) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 BottomLanding(label = stringResource(id = R.string.save)) {
+                    navController.popBackStack()
+                    navController.navigate(TandatanganioScreen.Profile.route)
                 }
             }
         }
@@ -164,9 +170,9 @@ fun EditProfileScreen(user: User) {
 }
 
 
-@Preview
-@Composable
-fun EditProfileScreenPreview() {
-    val mockuser = User(R.drawable.avatar, "Asep Konco")
-    EditProfileScreen(mockuser)
-}
+//@Preview
+//@Composable
+//fun EditProfileScreenPreview() {
+//    val mockuser = User(R.drawable.avatar, "Asep Konco")
+//    EditProfileScreen(mockuser)
+//}

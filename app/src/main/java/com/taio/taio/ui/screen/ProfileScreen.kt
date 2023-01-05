@@ -13,20 +13,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.taio.taio.R
 import com.taio.taio.domain.model.User
+import com.taio.taio.ui.TandatanganioScreen
+import com.taio.taio.ui.theme.Gray700
 import com.taio.taio.ui.theme.TandatanganioMobileTheme
 import com.taio.taio.ui.theme.Typography
 
 @Composable
-fun ProfileScreen(user: User) {
+fun ProfileScreen(
+    user: User,
+    navController: NavHostController
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
     ) {
         Row(
             modifier = Modifier
@@ -34,20 +41,20 @@ fun ProfileScreen(user: User) {
                 .padding(bottom = 5.dp)
         ) {
             Text(
-                text = "Profil",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.W500,
-                color = Color(0xFF000000),
-                lineHeight = 21.sp,
-                style = Typography.h1
+                text = stringResource(R.string.profile),
+                color = Color.Black,
+                style = Typography.h3
             )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 painter = painterResource(id = R.drawable.edit_profile),
-                contentDescription = "Edit Profil",
+                contentDescription = null,
                 tint = MaterialTheme.colors.primary,
                 modifier = Modifier
                     .size(30.dp)
+                    .clickable {
+                        navController.navigate(TandatanganioScreen.EditProfile.route)
+                    }
             )
         }
         Image(
@@ -63,19 +70,21 @@ fun ProfileScreen(user: User) {
             text = user.name,
             modifier = Modifier
                 .align(alignment = Alignment.CenterHorizontally),
-            style = Typography.h1
+            style = Typography.h6
         )
         Text(
             text = user.email,
             modifier = Modifier
                 .align(alignment = Alignment.CenterHorizontally),
-            style = Typography.caption
+            style = Typography.body2,
+            color = Gray700
         )
         Text(
-            text = "087770775311",
+            text = user.phone,
             modifier = Modifier
                 .align(alignment = Alignment.CenterHorizontally),
-            style = Typography.caption
+            style = Typography.body2,
+            color = Gray700
         )
         Spacer(modifier = Modifier.padding(20.dp))
         Row(
@@ -88,22 +97,23 @@ fun ProfileScreen(user: User) {
                     .border(BorderStroke(1.dp, Color.LightGray))
             ) {
                 Text(
-                    text = "37",
+                    text = user.follower.size.toString(),
                     modifier = Modifier
                         .align(alignment = Alignment.CenterHorizontally),
                     style = Typography.h1
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.follower),
-                    contentDescription = "Pengikut",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(50.dp)
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
-                    text = "Pengikut",
-                    style = Typography.caption,
+                    text = stringResource(R.string.follower),
+                    style = Typography.subtitle2,
+                    color = Gray700,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                 )
@@ -114,22 +124,23 @@ fun ProfileScreen(user: User) {
                     .border(BorderStroke(1.dp, Color.LightGray))
             ) {
                 Text(
-                    text = "909",
+                    text = user.following.size.toString(),
                     modifier = Modifier
                         .align(alignment = Alignment.CenterHorizontally),
                     style = Typography.h1
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.following),
-                    contentDescription = "Pengikut",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(50.dp)
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
-                    text = "Mengikuti",
-                    style = Typography.caption,
+                    text = stringResource(R.string.following),
+                    style = Typography.subtitle2,
+                    color = Gray700,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                 )
@@ -141,28 +152,28 @@ fun ProfileScreen(user: User) {
                 .padding(horizontal = 20.dp)
         ) {
             Text(
-                text = "Statistik",
-                style = Typography.h1
+                text = stringResource(R.string.statistic),
+                style = Typography.h3
             )
             Row(
                 modifier = Modifier.padding(vertical = 5.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.generated_count),
-                    contentDescription = "Tandatangan tergenerate",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(20.dp),
                 )
                 Text(
-                    text = "Tandatangan ter-generate: 3", //Number i variable
-                    style = Typography.caption,
+                    text = stringResource(R.string.generate_count) + user.tergenerate.size.toString(),
+                    style = Typography.body2,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )
                 Spacer(Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.slide_up),
-                    contentDescription = "Lebih lengkap",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(20.dp)
@@ -173,20 +184,20 @@ fun ProfileScreen(user: User) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.selfmade_count),
-                    contentDescription = "Dibuat secara mandiri",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(20.dp)
                 )
                 Text(
-                    text = "Dibuat secara mandiri: 1", //Number i variable
-                    style = Typography.caption,
+                    text = stringResource(R.string.generate_self) + user.self.size.toString(),
+                    style = Typography.body2,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )
                 Spacer(Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.slide_up),
-                    contentDescription = "Lebih lengkap",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(20.dp)
@@ -197,20 +208,20 @@ fun ProfileScreen(user: User) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.requestmade_count),
-                    contentDescription = "Dibuat melalui permintaan",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(20.dp)
                 )
                 Text(
-                    text = "Dibuat melalui permintaan: 1", //Number i variable
-                    style = Typography.caption,
+                    text = stringResource(R.string.generate_request) + user.requested.size.toString(),
+                    style = Typography.body2,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )
                 Spacer(Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.slide_up),
-                    contentDescription = "Lebih lengkap",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(20.dp)
@@ -223,28 +234,28 @@ fun ProfileScreen(user: User) {
                 .padding(horizontal = 20.dp)
         ) {
             Text(
-                text = "Lainnya",
-                style = Typography.h1
+                text = stringResource(id = R.string.other),
+                style = Typography.h3
             )
             Row(
                 modifier = Modifier.padding(vertical = 5.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.privacy_policy),
-                    contentDescription = "Edit Profil",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(20.dp)
                 )
                 Text(
-                    text = "Privacy & Policy",
-                    style = Typography.caption,
+                    text = stringResource(R.string.privacy_policy),
+                    style = Typography.body2,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )
                 Spacer(Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.slide_up),
-                    contentDescription = "Edit Profil",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .size(20.dp)
@@ -255,35 +266,37 @@ fun ProfileScreen(user: User) {
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.logout),
-                    contentDescription = "Edit Profil",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.error,
                     modifier = Modifier
                         .size(20.dp)
                 )
                 Text(
-                    text = "Logout",
-                    style = Typography.caption,
+                    text = stringResource(R.string.logout),
+                    style = Typography.body2,
                     modifier = Modifier.padding(horizontal = 2.dp),
                     color = MaterialTheme.colors.error
                 )
                 Spacer(Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.slide_up),
-                    contentDescription = "Edit Profil",
+                    contentDescription = null,
                     tint = MaterialTheme.colors.error,
                     modifier = Modifier
                         .size(20.dp)
                 )
             }
+            Spacer(Modifier.height(35.dp))
         }
     }
 }
 
-@Preview (showSystemUi = true)
-@Composable
-fun ProfileScreenPreview() {
-    TandatanganioMobileTheme {
-        val mockUser = User(R.drawable.avatar, "Asep Konco")
-        ProfileScreen(mockUser)
-    }
-}
+//@Preview (showSystemUi = true)
+//@Composable
+//fun ProfileScreenPreview() {
+//    TandatanganioMobileTheme {
+//        val mockUser = User(R.drawable.avatar, "Asep Konco")
+//        val navController = rememberNavController()
+//        ProfileScreen(mockUser, navController)
+//    }
+//}

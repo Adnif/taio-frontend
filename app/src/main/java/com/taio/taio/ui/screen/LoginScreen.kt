@@ -21,11 +21,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.taio.taio.R
 import com.taio.taio.data.LoginState
+import com.taio.taio.ui.TandatanganioScreen
 import com.taio.taio.ui.theme.*
 import com.taio.taio.viewmodel.LoginViewModel
 
@@ -118,6 +120,8 @@ fun LoginScreen(
                         if(!viewModel.isFormValid()) {
                             viewModel.isFormError(true)
                         }else{
+                            navController.popBackStack()
+                            navController.navigate(TandatanganioScreen.Home.route)
                         }
 
                     },
@@ -167,7 +171,10 @@ fun LoginScreen(
                         text = stringResource(id = R.string.sign_up),
                         style = Typography.subtitle1,
                         color = Green500,
-                        modifier = Modifier.clickable {  }
+                        modifier = Modifier.clickable {
+                            navController.popBackStack()
+                            navController.navigate(TandatanganioScreen.Register.route)
+                        }
                     )
                 }
             }
@@ -197,9 +204,11 @@ fun TextFields(
     )
     OutlinedTextField(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(49.dp)
+            .padding(0.dp),
         value = text,
-        textStyle = Typography.subtitle2,
+        textStyle = Typography.body2,
         enabled = enabled,
         onValueChange = {
             if (errorState) {
@@ -221,7 +230,8 @@ fun TextFields(
             unfocusedBorderColor = if (errorState) Red500 else Gray300,
             focusedBorderColor = Green500,
             textColor = Gray700
-        )
+        ),
+        singleLine = true
 
     )
 }
@@ -248,8 +258,8 @@ fun PassField(
     )
     OutlinedTextField(
         value = text,
-        textStyle = Typography.subtitle2,
         enabled = enabled,
+        textStyle = Typography.body2,
         onValueChange = {
             if (errorState) {
                 isError(false)
@@ -257,7 +267,9 @@ fun PassField(
             onValueChange(it)
         },
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(49.dp)
+            .padding(0.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             unfocusedBorderColor = if (errorState) Red500 else Gray300,
             focusedBorderColor = Green500,
@@ -285,7 +297,8 @@ fun PassField(
                 )
             }
         },
-        visualTransformation = if (passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None
+        visualTransformation = if (passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
+        singleLine = true
     )
 }
 

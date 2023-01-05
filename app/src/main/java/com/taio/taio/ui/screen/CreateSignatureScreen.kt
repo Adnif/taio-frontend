@@ -10,6 +10,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -37,12 +39,7 @@ import io.ak1.drawbox.DrawController
 import io.ak1.drawbox.rememberDrawController
 
 @Composable
-fun TestCreateScreen(navController: NavController){
-    CreateSignatureScreen()
-}
-
-@Composable
-fun CreateSignatureScreen(viewModel: CreateSignatureViewModel = viewModel()){
+fun CreateSignatureScreen(navController: NavController, viewModel: CreateSignatureViewModel = viewModel()){
     val createState = viewModel.createState.collectAsState().value
     val page = remember {
         mutableStateOf(1)
@@ -60,13 +57,20 @@ fun CreateSignatureScreen(viewModel: CreateSignatureViewModel = viewModel()){
         modifier = Modifier
             .fillMaxHeight(),
         topBar = {
-            TopAppBar() {
-                Text(
-                    text = "Buat Tanda Tangan",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Buat Tanda Tangan",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(Icons.Filled.ArrowBack, null)
+                    }
+                }
+            )
         }
     ) {
         when(page.value){
@@ -182,7 +186,7 @@ fun PageOne(
         Spacer(Modifier.size(80.dp))
         Spacer(Modifier.weight(1f))
         ButtonFooter(
-            label = "Next",
+            label = "Selanjutnya",
             onButtonClick = {
                 if(!viewModel.isPageOneValid()) {
                     viewModel.isFormError(true)
@@ -206,7 +210,15 @@ fun PageTwo(
         .verticalScroll(rememberScrollState())
         .padding(16.dp)
         .padding(top = 10.dp)) {
-
+        ButtonFooter(
+            label = "Selanjutnya",
+            onButtonClick = {
+                page.value = 3
+            }
+        )
+        ButtonFooterWhite(
+            label = "Kembali",
+            onButtonClick = {page.value = 1})
     }
 }
 
