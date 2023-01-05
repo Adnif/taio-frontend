@@ -2,13 +2,10 @@ package com.taio.taio.ui.screen
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.sharp.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,22 +15,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.taio.taio.R
 import com.taio.taio.data.DataSource
 import com.taio.taio.domain.model.User
 import com.taio.taio.domain.model.UserRequest
 import com.taio.taio.domain.model.UserRequested
+import com.taio.taio.ui.TandatanganioScreen
 import com.taio.taio.ui.theme.*
+import com.taio.taio.viewmodel.SplashViewModel
 
 @Composable
 fun HomeScreen(
+    navController: NavController,
     authenticatedUser: User,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ){
     Column(
         modifier = Modifier
@@ -61,8 +62,7 @@ fun HomeScreen(
             )
         }
 
-        SearchBar(onSearchBarClick = {})
-
+        SearchBar(onSearchBarClick = {navController.navigate(TandatanganioScreen.Search.route)})
         Row(
             modifier = modifier
                 .padding(PaddingValues(top = 30.dp))
@@ -109,7 +109,7 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                modifier = Modifier.clickable {  },
+                modifier = Modifier.clickable { navController.navigate(TandatanganioScreen.Request.route) },
                 textAlign = TextAlign.End,
                 text = stringResource(R.string.more),
                 style = Typography.body1,
@@ -136,7 +136,7 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                modifier = Modifier.clickable {  },
+                modifier = Modifier.clickable { navController.navigate(TandatanganioScreen.Submission.route) },
                 textAlign = TextAlign.End,
                 text = stringResource(R.string.more),
                 style = Typography.body1,
@@ -145,6 +145,7 @@ fun HomeScreen(
         }
 
         RequestedList(requested = DataSource().loadRequested())
+        Spacer(Modifier.height(35.dp))
     }
 }
 
@@ -168,11 +169,13 @@ fun SearchBar(
             Icons.Sharp.Search,
             null,
             modifier
-                .size(20.dp)
+                .size(20.dp),
+            Gray700
         )
         Text(
             text = stringResource(id = R.string.search_placeholder),
-            modifier = modifier.padding(start = 5.dp)
+            modifier = modifier.padding(start = 5.dp),
+            color = Gray700
         )
     }
 }
@@ -214,7 +217,7 @@ private fun RequestedList(requested: List<UserRequested>){
     else {
         requested.size
     }
-    Column {
+    Column{
         for (i in 0..requestedSize-1) {
             Requested(requested[i])
         }
@@ -316,7 +319,7 @@ fun Requested(request: UserRequested, modifier: Modifier = Modifier) {
         elevation = 2.dp,
         modifier = Modifier
             .padding(top = 10.dp)
-            .defaultMinSize(400.dp)
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.padding(16.dp)
@@ -465,19 +468,20 @@ fun RequestedStatus(
     )
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun HomeScreenPreview(){
-    TandatanganioMobileTheme() {
-        val mockUser = User(R.drawable.avatar, "Asep Konco")
-        HomeScreen(mockUser)
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun RequestedPreview(){
-    TandatanganioMobileTheme() {
-        RequestedList(requested = DataSource().loadRequested())
-    }
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun HomeScreenPreview(){
+//    TandatanganioMobileTheme() {
+//        val mockUser = User(R.drawable.avatar, "Asep Konco")
+//        val navController = rememberNavController()
+//        HomeScreen(authenticatedUser = mockUser, navController = navController)
+//    }
+//}
+//
+//@Preview(showSystemUi = true)
+//@Composable
+//fun RequestedPreview(){
+//    TandatanganioMobileTheme() {
+//        RequestedList(requested = DataSource().loadRequested())
+//    }
+//}

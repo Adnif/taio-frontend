@@ -1,12 +1,13 @@
 package com.taio.taio.ui.screen
 
-import android.view.RoundedCorner
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,24 +19,56 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.*
 import com.taio.taio.R
-import com.taio.taio.ui.theme.Blue500
+import com.taio.taio.ui.TandatanganioScreen
 import com.taio.taio.ui.theme.Gray700
 import com.taio.taio.ui.theme.Green500
 import com.taio.taio.ui.theme.Typography
+import com.taio.taio.viewmodel.SplashViewModel
 import kotlinx.coroutines.launch
 
+sealed class LandingPage(
+    val image:Int,
+    val title:Int,
+    val desc:Int
+){
+    object First: LandingPage(
+        image = R.drawable.isi_form,
+        title = R.string.landing_title_first,
+        desc = R.string.landing_desc_first
+    )
+    object Second: LandingPage(
+        image = R.drawable.ttd,
+        title = R.string.landing_title_second,
+        desc = R.string.landing_desc_second
+    )
+    object Third: LandingPage(
+        image = R.drawable.generate,
+        title = R.string.landing_title_third,
+        desc = R.string.landing_desc_third
+    )
+}
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun LandingScreen(){
-    val pages = listOf(R.drawable.isi_form,R.drawable.ttd,R.drawable.generate)
+fun LandingScreen(
+    navController: NavHostController,
+){
+    val pages = listOf(
+        LandingPage.First,
+        LandingPage.Second,
+        LandingPage.Third
+    )
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -48,17 +81,21 @@ fun LandingScreen(){
             Column(
             ){
                 Row(verticalAlignment = Alignment.CenterVertically){
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_taio_rectangle),
-                        contentDescription = stringResource(R.string.logo_taio),
+                    Card(
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = 10.dp,
                         modifier = Modifier
-                            .size(50.dp)
-//                            .shadow(elevation = 2.dp)
-                            .padding(end = 10.dp),
-                    )
+                            .size(45.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo_taio_rectangle),
+                            contentDescription = stringResource(R.string.logo_taio),
+                        )
+                    }
+                    Spacer(Modifier.width(16.dp))
                     Text(
                         text = stringResource(id = R.string.name),
-                        style = Typography.h4,
+                        style = Typography.h5,
                         color = Color.Black
                     )
                     Spacer(Modifier.weight(1f))
@@ -75,7 +112,7 @@ fun LandingScreen(){
                 }
 
             }
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.height(16.dp))
             Column(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             ){
@@ -108,7 +145,8 @@ fun LandingScreen(){
                     }
                 }else -> {
                 BottomLanding(label = stringResource(id = R.string.sign_up)) {
-
+                    navController.popBackStack()
+                    navController.navigate(TandatanganioScreen.Register.route)
                 }
             }
             }
@@ -122,19 +160,41 @@ fun LandingScreen(){
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Pages(
-    pages: List<Int>,
+    pages: List<LandingPage>,
     pagerState: PagerState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
 
         HorizontalPager(count = 3, state = pagerState) {position ->
-            Image(
-                painter = painterResource(id = pages[position]),
-                contentDescription = stringResource(id = R.string.content_description_pager)
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.SpaceEvenly){
+                Spacer(Modifier.height(16.dp))
+                Image(
+                    modifier = modifier
+                        .size(70.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+                    contentScale = ContentScale.Crop,
+                    painter = painterResource(id = pages[position].image),
+                    contentDescription = stringResource(id = R.string.content_description_pager)
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = stringResource(pages[position].title),
+                    style = Typography.h3,
+                    color = Color.Black
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = stringResource(pages[position].desc),
+                    style = Typography.subtitle1,
+                    color = Gray700,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(16.dp))
+
+            }
         }
 
     }
@@ -212,7 +272,7 @@ fun BottomLanding(
             text = stringResource(id = R.string.agreement_privacy_policy),
             style = Typography.overline,
             color = Gray700,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            textAlign = TextAlign.Center
         )
         Spacer(Modifier.size(16.dp))
         Text(
@@ -220,7 +280,8 @@ fun BottomLanding(
             style = Typography.subtitle1,
             color = Green500,
             modifier = Modifier.
-            clickable {  }
+            clickable {
+            }
         )
     }
 }
@@ -228,5 +289,6 @@ fun BottomLanding(
 @Composable
 @Preview(showSystemUi = true)
 fun LandingScreenPreview(){
-    LandingScreen()
+    val navController = rememberNavController()
+    LandingScreen(navController)
 }
