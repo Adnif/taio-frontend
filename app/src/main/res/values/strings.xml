@@ -43,5 +43,20 @@
     <string name="email_check">Silahkan Cek Email Anda</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="ttdGuide3">Hasil tanda tangan dapat dilihat pada signature preview, harap simpan terlebih dahulu tanda tangan yang telah dibuat</string>
+    <string name="landing_title_first">Isi Form</string>
+    <string name="landing_desc_first">Keterangan dokumen yang hendak ditandatangani</string>
+    <string name="landing_title_second">Tanda Tangan</string>
+    <string name="landing_desc_second">Munggunakan Upload/Live Signature</string>
+    <string name="landing_title_third">Generate</string>
+    <string name="landing_desc_third">QR code &amp; tanda tangan</string>
+    <string name="profile">Profil</string>
+    <string name="follower">Pengikut</string>
+    <string name="following">Mengikuti</string>
+    <string name="statistic">Statistik</string>
+    <string name="generate_count">Tandatangan ter-generate: </string>
+    <string name="generate_self">Dibuat secara mandiri: </string>
+    <string name="generate_request">Dibuat melalui permintaan: </string>
+    <string name="other">Lainnya</string>
+    <string name="logout">Keluar</string>
 
 </resources>
